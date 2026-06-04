@@ -4,65 +4,69 @@
     ViewData["Title"] = "Seznam smluv";
 }
 
-<h1>Seznam smluv</h1>
-
-<p>
-    <a class="btn btn-primary" asp-action="Create">Přidat smlouvu</a>
-</p>
-
-<form method="get" class="mb-3">
-    <div class="input-group">
-        <input type="text" name="searchString" value="@Context.Request.Query["searchString"]" class="form-control" placeholder="Hledejte podle evidenčního čísla, instituce nebo klienta" />
-        <button class="btn btn-outline-secondary" type="submit">Hledat</button>
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Seznam smluv</h5>
+        <a class="btn btn-primary" asp-action="Create">Přidat smlouvu</a>
     </div>
-</form>
+    <div class="card-body">
+        <form method="get" class="mb-3">
+            <div class="input-group">
+                <input type="text" name="searchString" value="@Context.Request.Query["searchString"]" class="form-control" placeholder="Hledejte podle evidenčního čísla, instituce nebo klienta" />
+                <button class="btn btn-outline-secondary" type="submit">Hledat</button>
+            </div>
+        </form>
 
-@if (!Model.Any())
-{
-    <p>Zatím nejsou evidovány žádné smlouvy.</p>
-}
-else
-{
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Evidenční číslo</th>
-                <th>Instituce</th>
-                <th>Klient</th>
-                <th>Správce smlouvy</th>
-                <th>Datum platnosti</th>
-                <th>Datum ukončení</th>
-                <th>Stav</th>
-                <th>Akce</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var item in Model)
+        @if (!Model.Any())
         {
-            <tr>
-                <td>@item.RegistrationNumber</td>
-                <td>@item.Institution</td>
-                <td>@item.Client?.FirstName @item.Client?.LastName</td>
-                <td>@item.ManagerAdvisor?.FirstName @item.ManagerAdvisor?.LastName</td>
-                <td>@item.DateValidFrom.ToShortDateString()</td>
-                <td>@(item.DateEnded.HasValue ? item.DateEnded.Value.ToShortDateString() : "-")</td>
-                <td>
-                    @if (!item.DateEnded.HasValue || item.DateEnded.Value >= DateTime.Today)
-                    {
-                        <span class="badge bg-success">Aktivní</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-secondary">Ukončená</span>
-                    }
-                </td>
-                <td>
-                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.Id">Detail</a>
-                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id">Upravit</a>
-                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id">Smazat</a>
-                </td>
-            </tr>
+            <p>Zatím nejsou evidovány žádné smlouvy.</p>
         }
-        </tbody>
-    </table>
-}
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Evidenční číslo</th>
+                            <th>Instituce</th>
+                            <th>Klient</th>
+                            <th>Správce smlouvy</th>
+                            <th>Datum platnosti</th>
+                            <th>Datum ukončení</th>
+                            <th>Stav</th>
+                            <th>Akce</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.RegistrationNumber</td>
+                            <td>@item.Institution</td>
+                            <td>@item.Client?.FirstName @item.Client?.LastName</td>
+                            <td>@item.ManagerAdvisor?.FirstName @item.ManagerAdvisor?.LastName</td>
+                            <td>@item.DateValidFrom.ToShortDateString()</td>
+                            <td>@(item.DateEnded.HasValue ? item.DateEnded.Value.ToShortDateString() : "-")</td>
+                            <td>
+                                @if (!item.DateEnded.HasValue || item.DateEnded.Value >= DateTime.Today)
+                                {
+                                    <span class="badge bg-success">Aktivní</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Ukončená</span>
+                                }
+                            </td>
+                            <td>
+                                <a class="btn btn-sm btn-outline-primary me-1" asp-action="Details" asp-route-id="@item.Id">Detail</a>
+                                <a class="btn btn-sm btn-outline-secondary me-1" asp-action="Edit" asp-route-id="@item.Id">Upravit</a>
+                                <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Smazat</a>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

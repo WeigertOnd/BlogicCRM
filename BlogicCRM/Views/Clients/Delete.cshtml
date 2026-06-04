@@ -4,26 +4,30 @@
     ViewData["Title"] = "Smazat klienta";
 }
 
-<h1>Smazat klienta</h1>
+<div class="card border-danger mb-3">
+    <div class="card-header bg-danger text-white">
+        <h5 class="mb-0">Smazat klienta</h5>
+    </div>
+    <div class="card-body">
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+        }
 
-@if (ViewBag.ErrorMessage != null)
-{
-    <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
-}
+        <p>Opravdu chcete smazat tohoto klienta?</p>
+        <dl class="row">
+            <dt class="col-sm-3">Jméno</dt>
+            <dd class="col-sm-9">@Model.FirstName</dd>
 
-<div>
-    <p>Opravdu chcete smazat tohoto klienta?</p>
-    <dl class="row">
-        <dt class="col-sm-2">Jméno</dt>
-        <dd class="col-sm-10">@Model.FirstName</dd>
-
-        <dt class="col-sm-2">Příjmení</dt>
-        <dd class="col-sm-10">@Model.LastName</dd>
-    </dl>
+            <dt class="col-sm-3">Příjmení</dt>
+            <dd class="col-sm-9">@Model.LastName</dd>
+        </dl>
+    </div>
+    <div class="card-footer text-end">
+        <form asp-action="Delete" method="post" class="d-inline">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger">Smazat</button>
+        </form>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Zpět na seznam klientů</a>
+    </div>
 </div>
-
-<form asp-action="Delete" method="post">
-    <input type="hidden" asp-for="Id" />
-    <button type="submit" class="btn btn-danger">Smazat</button>
-    <a asp-action="Index" class="btn btn-secondary">Zpět na seznam klientů</a>
-</form>

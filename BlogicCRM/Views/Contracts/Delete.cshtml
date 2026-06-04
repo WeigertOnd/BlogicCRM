@@ -4,22 +4,25 @@
     ViewData["Title"] = "Smazat smlouvu";
 }
 
-<h1>Smazat smlouvu</h1>
+<div class="card border-danger mb-3">
+    <div class="card-header bg-danger text-white">
+        <h5 class="mb-0">Smazat smlouvu</h5>
+    </div>
+    <div class="card-body">
+        <p>Opravdu chcete smazat tuto smlouvu?</p>
+        <dl class="row">
+            <dt class="col-sm-3">Evidenční číslo</dt>
+            <dd class="col-sm-9">@Model.RegistrationNumber</dd>
 
-<p>Opravdu chcete smazat tuto smlouvu?</p>
-
-<div>
-    <dl class="row">
-        <dt class="col-sm-2">Evidenční číslo</dt>
-        <dd class="col-sm-10">@Model.RegistrationNumber</dd>
-
-        <dt class="col-sm-2">Instituce</dt>
-        <dd class="col-sm-10">@Model.Institution</dd>
-    </dl>
+            <dt class="col-sm-3">Instituce</dt>
+            <dd class="col-sm-9">@Model.Institution</dd>
+        </dl>
+    </div>
+    <div class="card-footer text-end">
+        <form asp-action="Delete" method="post" class="d-inline">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger">Smazat</button>
+        </form>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Zpět na seznam smluv</a>
+    </div>
 </div>
-
-<form asp-action="Delete" method="post">
-    <input type="hidden" asp-for="Id" />
-    <button type="submit" class="btn btn-danger">Smazat</button>
-    <a asp-action="Index" class="btn btn-secondary">Zpět na seznam smluv</a>
-</form>
