@@ -1,8 +1,99 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model BlogicCRM.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h1>Dashboard</h1>
+<p>Přehled základních údajů CRM systému.</p>
+
+<div class="row">
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Klienti</h5>
+                <p class="card-text display-6">@Model.ClientsCount</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-secondary">
+            <div class="card-body">
+                <h5 class="card-title">Poradci</h5>
+                <p class="card-text display-6">@Model.AdvisorsCount</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Smlouvy celkem</h5>
+                <p class="card-text display-6">@Model.ContractsCount</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5 class="card-title">Aktivní smlouvy</h5>
+                <p class="card-text display-6">@Model.ActiveContractsCount</p>
+            </div>
+        </div>
+    </div>
 </div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Ukončené smlouvy</h5>
+                <p class="card-text display-6">@Model.EndedContractsCount</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3>Poslední smlouvy</h3>
+@if (!Model.RecentContracts.Any())
+{
+    <p>Zatím nejsou evidovány žádné smlouvy.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Evidenční číslo</th>
+                <th>Instituce</th>
+                <th>Klient</th>
+                <th>Správce</th>
+                <th>Datum platnosti</th>
+                <th>Stav</th>
+                <th>Akce</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var c in Model.RecentContracts)
+        {
+            <tr>
+                <td>@c.RegistrationNumber</td>
+                <td>@c.Institution</td>
+                <td>@c.Client?.FirstName @c.Client?.LastName</td>
+                <td>@c.ManagerAdvisor?.FirstName @c.ManagerAdvisor?.LastName</td>
+                <td>@c.DateValidFrom.ToShortDateString()</td>
+                <td>
+                    @if (!c.DateEnded.HasValue || c.DateEnded.Value >= DateTime.Today)
+                    {
+                        <span class="badge bg-success">Aktivní</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Ukončená</span>
+                    }
+                </td>
+                <td><a class="btn btn-sm btn-info" asp-controller="Contracts" asp-action="Details" asp-route-id="@c.Id">Detail</a></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
