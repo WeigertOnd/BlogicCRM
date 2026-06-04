@@ -11,15 +11,35 @@
     </div>
     <div class="card-body">
         <form method="get" class="mb-3">
-            <div class="input-group">
-                <input type="text" name="searchString" value="@Context.Request.Query["searchString"]" class="form-control" placeholder="Hledejte podle evidenčního čísla, instituce nebo klienta" />
-                <button class="btn btn-outline-secondary" type="submit">Hledat</button>
+            @{
+                var status = Context.Request.Query["statusFilter"].ToString();
+                var selAll = string.IsNullOrEmpty(status) || status == "All";
+                var selActive = status == "Active";
+                var selEnded = status == "Ended";
+            }
+            <div class="row g-2">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <input type="text" name="searchString" value="@Context.Request.Query["searchString"]" class="form-control" placeholder="Hledat podle evidenčního čísla, instituce, klienta nebo správce" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select name="statusFilter" class="form-select">
+                        <option value="All" selected="@(selAll ? "selected" : null)">Všechny</option>
+                        <option value="Active" selected="@(selActive ? "selected" : null)">Aktivní</option>
+                        <option value="Ended" selected="@(selEnded ? "selected" : null)">Ukončené</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex">
+                    <button class="btn btn-outline-secondary me-2" type="submit">Hledat</button>
+                    <a class="btn btn-outline-secondary" href="@Url.Action("Index", "Contracts")">Zrušit filtr</a>
+                </div>
             </div>
         </form>
 
         @if (!Model.Any())
         {
-            <p>Zatím nejsou evidovány žádné smlouvy.</p>
+            <p>Nebyly nalezeny žádné záznamy odpovídající filtru.</p>
         }
         else
         {

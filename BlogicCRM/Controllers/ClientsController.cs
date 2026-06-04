@@ -23,8 +23,15 @@ namespace BlogicCRM.Controllers
 
             if (!string.IsNullOrWhiteSpace(searchString))
             {
-                searchString = searchString.Trim();
-                clients = clients.Where(c => c.FirstName.Contains(searchString) || c.LastName.Contains(searchString) || c.Email.Contains(searchString));
+                var s = searchString.Trim();
+                if (int.TryParse(s, out var n))
+                {
+                    clients = clients.Where(c => c.FirstName.Contains(s) || c.LastName.Contains(s) || c.Email.Contains(s) || c.Phone.Contains(s) || c.BirthNumber.Contains(s) || c.Age == n);
+                }
+                else
+                {
+                    clients = clients.Where(c => c.FirstName.Contains(s) || c.LastName.Contains(s) || c.Email.Contains(s) || c.Phone.Contains(s) || c.BirthNumber.Contains(s));
+                }
             }
 
             var list = await clients.OrderBy(c => c.LastName).ThenBy(c => c.FirstName).ToListAsync();

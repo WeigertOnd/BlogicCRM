@@ -20,7 +20,7 @@ namespace BlogicCRM.Controllers
         }
 
         // GET: Contracts
-        public async Task<IActionResult> Index(string? searchString)
+        public async Task<IActionResult> Index(string? searchString, string? statusFilter)
         {
             var contracts = _context.Contracts
                 .Include(c => c.Client)
@@ -29,10 +29,24 @@ namespace BlogicCRM.Controllers
 
             if (!string.IsNullOrWhiteSpace(searchString))
             {
-                searchString = searchString.Trim();
-                contracts = contracts.Where(c => c.RegistrationNumber.Contains(searchString)
-                    || c.Institution.Contains(searchString)
-                    || (c.Client != null && (c.Client.FirstName.Contains(searchString) || c.Client.LastName.Contains(searchString))));
+                var s = searchString.Trim();
+                contracts = contracts.Where(c => c.RegistrationNumber.Contains(s)
+                    || c.Institution.Contains(s)
+                    || (c.Client != null && (c.Client.FirstName.Contains(s) || c.Client.LastName.Contains(s)))
+                    || (c.ManagerAdvisor != null && (c.ManagerAdvisor.FirstName.Contains(s) || c.ManagerAdvisor.LastName.Contains(s))));
+            }
+
+            // status filter: "All" or null => all, "Active" => not ended or ended >= today, "Ended" => ended < today
+            if (!string.IsNullOrWhiteSpace(statusFilter) && statusFilter != "All")
+            {
+                if (statusFilter == "Active")
+                {
+                    contracts = contracts.Where(c => !c.DateEnded.HasValue || c.DateEnded.Value >= DateTime.Today);
+                }
+                else if (statusFilter == "Ended")
+                {
+                    contracts = contracts.Where(c => c.DateEnded.HasValue && c.DateEnded.Value < DateTime.Today);
+                }
             }
 
             var list = await contracts.OrderBy(c => c.RegistrationNumber).ToListAsync();

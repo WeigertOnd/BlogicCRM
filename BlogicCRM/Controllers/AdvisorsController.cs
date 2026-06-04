@@ -23,8 +23,15 @@ namespace BlogicCRM.Controllers
 
             if (!string.IsNullOrWhiteSpace(searchString))
             {
-                searchString = searchString.Trim();
-                advisors = advisors.Where(a => a.FirstName.Contains(searchString) || a.LastName.Contains(searchString) || a.Email.Contains(searchString));
+                var s = searchString.Trim();
+                if (int.TryParse(s, out var n))
+                {
+                    advisors = advisors.Where(a => a.FirstName.Contains(s) || a.LastName.Contains(s) || a.Email.Contains(s) || a.Phone.Contains(s) || a.BirthNumber.Contains(s) || a.Age == n);
+                }
+                else
+                {
+                    advisors = advisors.Where(a => a.FirstName.Contains(s) || a.LastName.Contains(s) || a.Email.Contains(s) || a.Phone.Contains(s) || a.BirthNumber.Contains(s));
+                }
             }
 
             var list = await advisors.OrderBy(a => a.LastName).ThenBy(a => a.FirstName).ToListAsync();

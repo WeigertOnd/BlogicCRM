@@ -12,14 +12,15 @@
     <div class="card-body">
         <form method="get" class="mb-3">
             <div class="input-group">
-                <input type="text" name="searchString" value="@Context.Request.Query["searchString"]" class="form-control" placeholder="Hledejte podle jména, příjmení nebo e-mailu" />
+                <input type="text" name="searchString" value="@Context.Request.Query["searchString"]" class="form-control" placeholder="Hledat podle jména, e-mailu, telefonu, rodného čísla nebo věku" />
                 <button class="btn btn-outline-secondary" type="submit">Hledat</button>
+                <a class="btn btn-outline-secondary ms-2" href="@Url.Action("Index", "Clients")">Zrušit filtr</a>
             </div>
         </form>
 
         @if (!Model.Any())
         {
-            <p>Zatím nejsou evidováni žádní klienti.</p>
+            <p>Nebyly nalezeny žádné záznamy odpovídající filtru.</p>
         }
         else
         {
