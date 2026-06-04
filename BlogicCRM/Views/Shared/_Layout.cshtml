@@ -33,6 +33,23 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Contracts" asp-action="Index">Smlouvy</a>
                         </li>
                     </ul>
+                    <ul class="navbar-nav">
+                        @if (User?.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item nav-link">Přihlášen: @User.Identity.Name</li>
+                            <li class="nav-item">
+                                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-link nav-link">Odhlásit</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Přihlásit</a>
+                            </li>
+                        }
+                    </ul>
                 </div>
             </div>
         </nav>

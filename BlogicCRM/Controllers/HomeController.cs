@@ -3,12 +3,14 @@ using BlogicCRM.ViewModels;
 using BlogicCRM.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using System.Diagnostics;
 using System.Linq;
 
 namespace BlogicCRM.Controllers
 {
-    public class HomeController : Controller
+[Authorize]
+public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
 

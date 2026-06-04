@@ -2,12 +2,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using BlogicCRM.Data;
 using BlogicCRM.Models;
 
 namespace BlogicCRM.Controllers
 {
-    public class AdvisorsController : Controller
+[Authorize]
+public class AdvisorsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
