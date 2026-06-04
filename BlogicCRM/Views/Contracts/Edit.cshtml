@@ -1,0 +1,73 @@
+@model BlogicCRM.ViewModels.ContractFormViewModel
+
+@{
+    ViewData["Title"] = "Upravit smlouvu";
+}
+
+<h1>Upravit smlouvu</h1>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div class="mb-3">
+        <label asp-for="RegistrationNumber" class="form-label"></label>
+        <input asp-for="RegistrationNumber" class="form-control" />
+        <span asp-validation-for="RegistrationNumber" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Institution" class="form-label"></label>
+        <input asp-for="Institution" class="form-control" />
+        <span asp-validation-for="Institution" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="ClientId" class="form-label"></label>
+        <select asp-for="ClientId" class="form-select" asp-items="@(new Microsoft.AspNetCore.Mvc.Rendering.SelectList(Model.Clients.Select(c => new { Id = c.Id, Full = c.FirstName + " " + c.LastName + (string.IsNullOrEmpty(c.Email) ? string.Empty : " (" + c.Email + ")") }), "Id", "Full"))">
+            <option value="">-- vyberte klienta --</option>
+        </select>
+        <span asp-validation-for="ClientId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="ManagerAdvisorId" class="form-label"></label>
+        <select asp-for="ManagerAdvisorId" class="form-select" asp-items="@(new Microsoft.AspNetCore.Mvc.Rendering.SelectList(Model.Advisors.Select(a => new { Id = a.Id, Full = a.FirstName + " " + a.LastName }), "Id", "Full"))">
+            <option value="">-- vyberte správce --</option>
+        </select>
+        <span asp-validation-for="ManagerAdvisorId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Účastníci</label>
+        <div>
+            @foreach (var a in Model.Advisors)
+            {
+                var isChecked = Model.SelectedAdvisorIds.Contains(a.Id);
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="SelectedAdvisorIds" value="@a.Id" id="adv_@a.Id" @(isChecked ? "checked" : "") />
+                    <label class="form-check-label" for="adv_@a.Id">@a.FirstName @a.LastName</label>
+                </div>
+            }
+        </div>
+        <span asp-validation-for="SelectedAdvisorIds" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DateClosed" class="form-label"></label>
+        <input asp-for="DateClosed" class="form-control" type="date" />
+        <span asp-validation-for="DateClosed" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="DateValidFrom" class="form-label"></label>
+        <input asp-for="DateValidFrom" class="form-control" type="date" />
+        <span asp-validation-for="DateValidFrom" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="DateEnded" class="form-label"></label>
+        <input asp-for="DateEnded" class="form-control" type="date" />
+        <span asp-validation-for="DateEnded" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Uložit změny</button>
+    <a asp-action="Index" class="btn btn-secondary">Zpět na seznam smluv</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

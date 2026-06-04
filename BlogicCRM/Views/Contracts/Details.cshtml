@@ -1,0 +1,59 @@
+@model BlogicCRM.Models.Contract
+
+@{
+    ViewData["Title"] = "Detail smlouvy";
+}
+
+<h1>Detail smlouvy</h1>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">Evidenční číslo</dt>
+        <dd class="col-sm-10">@Model.RegistrationNumber</dd>
+
+        <dt class="col-sm-2">Instituce</dt>
+        <dd class="col-sm-10">@Model.Institution</dd>
+
+        <dt class="col-sm-2">Klient</dt>
+        <dd class="col-sm-10"><a asp-controller="Clients" asp-action="Details" asp-route-id="@Model.ClientId">@Model.Client?.FirstName @Model.Client?.LastName</a></dd>
+
+        <dt class="col-sm-2">Správce smlouvy</dt>
+        <dd class="col-sm-10"><a asp-controller="Advisors" asp-action="Details" asp-route-id="@Model.ManagerAdvisorId">@Model.ManagerAdvisor?.FirstName @Model.ManagerAdvisor?.LastName</a></dd>
+
+        <dt class="col-sm-2">Datum uzavření</dt>
+        <dd class="col-sm-10">@Model.DateClosed.ToShortDateString()</dd>
+
+        <dt class="col-sm-2">Datum platnosti</dt>
+        <dd class="col-sm-10">@Model.DateValidFrom.ToShortDateString()</dd>
+
+        <dt class="col-sm-2">Datum ukončení</dt>
+        <dd class="col-sm-10">@(Model.DateEnded.HasValue ? Model.DateEnded.Value.ToShortDateString() : "-")</dd>
+
+        <dt class="col-sm-2">Stav</dt>
+        <dd class="col-sm-10">
+            @if (!Model.DateEnded.HasValue || Model.DateEnded.Value >= DateTime.Today)
+            {
+                <span class="badge bg-success">Aktivní</span>
+            }
+            else
+            {
+                <span class="badge bg-secondary">Ukončená</span>
+            }
+        </dd>
+    </dl>
+</div>
+
+<div>
+    <h4>Účastníci</h4>
+    <ul>
+    @foreach (var ca in Model.ContractAdvisors ?? new List<BlogicCRM.Models.ContractAdvisor>())
+    {
+        <li><a asp-controller="Advisors" asp-action="Details" asp-route-id="@ca.AdvisorId">@ca.Advisor?.FirstName @ca.Advisor?.LastName</a></li>
+    }
+    </ul>
+</div>
+
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Upravit</a>
+    <a asp-action="Index" class="btn btn-secondary">Zpět na seznam smluv</a>
+</p>

@@ -1,0 +1,25 @@
+@model BlogicCRM.Models.Contract
+
+@{
+    ViewData["Title"] = "Smazat smlouvu";
+}
+
+<h1>Smazat smlouvu</h1>
+
+<p>Opravdu chcete smazat tuto smlouvu?</p>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">Evidenční číslo</dt>
+        <dd class="col-sm-10">@Model.RegistrationNumber</dd>
+
+        <dt class="col-sm-2">Instituce</dt>
+        <dd class="col-sm-10">@Model.Institution</dd>
+    </dl>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Smazat</button>
+    <a asp-action="Index" class="btn btn-secondary">Zpět na seznam smluv</a>
+</form>

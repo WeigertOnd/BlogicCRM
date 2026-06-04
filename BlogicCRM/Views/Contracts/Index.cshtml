@@ -1,0 +1,68 @@
+@model IEnumerable<BlogicCRM.Models.Contract>
+
+@{
+    ViewData["Title"] = "Seznam smluv";
+}
+
+<h1>Seznam smluv</h1>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">Přidat smlouvu</a>
+</p>
+
+<form method="get" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="searchString" value="@Context.Request.Query["searchString"]" class="form-control" placeholder="Hledejte podle evidenčního čísla, instituce nebo klienta" />
+        <button class="btn btn-outline-secondary" type="submit">Hledat</button>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <p>Zatím nejsou evidovány žádné smlouvy.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Evidenční číslo</th>
+                <th>Instituce</th>
+                <th>Klient</th>
+                <th>Správce smlouvy</th>
+                <th>Datum platnosti</th>
+                <th>Datum ukončení</th>
+                <th>Stav</th>
+                <th>Akce</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.RegistrationNumber</td>
+                <td>@item.Institution</td>
+                <td>@item.Client?.FirstName @item.Client?.LastName</td>
+                <td>@item.ManagerAdvisor?.FirstName @item.ManagerAdvisor?.LastName</td>
+                <td>@item.DateValidFrom.ToShortDateString()</td>
+                <td>@(item.DateEnded.HasValue ? item.DateEnded.Value.ToShortDateString() : "-")</td>
+                <td>
+                    @if (!item.DateEnded.HasValue || item.DateEnded.Value >= DateTime.Today)
+                    {
+                        <span class="badge bg-success">Aktivní</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Ukončená</span>
+                    }
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.Id">Detail</a>
+                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id">Upravit</a>
+                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id">Smazat</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
