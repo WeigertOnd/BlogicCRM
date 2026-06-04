@@ -86,6 +86,7 @@
                     @foreach (var ca in Model.ContractAdvisors)
                     {
                         var c = ca.Contract;
+                        if (c == null) { continue; }
                         <tr>
                             <td>@c.RegistrationNumber</td>
                             <td>@c.Institution</td>

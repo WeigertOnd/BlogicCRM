@@ -40,9 +40,9 @@ namespace BlogicCRM.Models
         public int Age { get; set; }
 
         [Display(Name = "Spravované smlouvy")]
-        public ICollection<Contract>? ManagedContracts { get; set; }
+        public ICollection<Contract> ManagedContracts { get; set; } = new List<Contract>();
 
         [Display(Name = "Účastníkem smluv")]
-        public ICollection<ContractAdvisor>? ContractAdvisors { get; set; }
+        public ICollection<ContractAdvisor> ContractAdvisors { get; set; } = new List<ContractAdvisor>();
     }
 }

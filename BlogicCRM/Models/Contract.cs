@@ -40,6 +40,6 @@ namespace BlogicCRM.Models
         [Display(Name = "Datum ukončení")]
         public DateTime? DateEnded { get; set; }
 
-        public ICollection<ContractAdvisor>? ContractAdvisors { get; set; }
+        public ICollection<ContractAdvisor> ContractAdvisors { get; set; } = new List<ContractAdvisor>();
     }
 }

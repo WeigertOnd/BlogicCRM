@@ -40,6 +40,6 @@ namespace BlogicCRM.Models
         public int Age { get; set; }
 
         [Display(Name = "Smlouvy")]
-        public ICollection<Contract>? Contracts { get; set; }
+        public ICollection<Contract> Contracts { get; set; } = new List<Contract>();
     }
 }

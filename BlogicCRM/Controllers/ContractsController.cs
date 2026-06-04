@@ -30,7 +30,9 @@ namespace BlogicCRM.Controllers
             if (!string.IsNullOrWhiteSpace(searchString))
             {
                 searchString = searchString.Trim();
-                contracts = contracts.Where(c => c.RegistrationNumber.Contains(searchString) || c.Institution.Contains(searchString) || c.Client.FirstName.Contains(searchString) || c.Client.LastName.Contains(searchString));
+                contracts = contracts.Where(c => c.RegistrationNumber.Contains(searchString)
+                    || c.Institution.Contains(searchString)
+                    || (c.Client != null && (c.Client.FirstName.Contains(searchString) || c.Client.LastName.Contains(searchString))));
             }
 
             var list = await contracts.OrderBy(c => c.RegistrationNumber).ToListAsync();
