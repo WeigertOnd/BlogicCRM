@@ -89,16 +89,20 @@ namespace BlogicCRM.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Register(RegisterViewModel vm)
         {
-            if (!ModelState.IsValid) return View(vm);
+            if (!ModelState.IsValid)
+            {
+                return View(vm);
+            }
 
-            var email = vm.Email.Trim();
+            var email = vm.Email.Trim().ToLowerInvariant();
+
+            // check duplicate
             if (_context.UserAccounts.Any(u => u.Email == email))
             {
                 ModelState.AddModelError(string.Empty, "Uživatel s tímto e-mailem již existuje.");
                 return View(vm);
             }
 
-            // create salt and hash
             var salt = GenerateSalt();
             var hash = HashPassword(vm.Password, salt);
 
@@ -109,8 +113,17 @@ namespace BlogicCRM.Controllers
                 PasswordHash = Convert.ToBase64String(hash),
                 CreatedAt = DateTime.UtcNow
             };
+
             _context.UserAccounts.Add(user);
-            _context.SaveChanges();
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (Microsoft.EntityFrameworkCore.DbUpdateException)
+            {
+                ModelState.AddModelError(string.Empty, "Uživatel s tímto e-mailem již existuje.");
+                return View(vm);
+            }
 
             TempData["Success"] = "Registrace proběhla úspěšně. Nyní se můžete přihlásit.";
             return RedirectToAction("Login");

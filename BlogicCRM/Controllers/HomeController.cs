@@ -25,8 +25,8 @@ public class HomeController : Controller
             vm.ClientsCount = await _context.Clients.CountAsync();
             vm.AdvisorsCount = await _context.Advisors.CountAsync();
             vm.ContractsCount = await _context.Contracts.CountAsync();
-            vm.ActiveContractsCount = await _context.Contracts.CountAsync(c => !c.DateEnded.HasValue || c.DateEnded.Value >= System.DateTime.Today);
-            vm.EndedContractsCount = vm.ContractsCount - vm.ActiveContractsCount;
+            vm.ActiveContractsCount = await _context.Contracts.CountAsync(c => !c.DateEnded.HasValue || c.DateEnded.Value > System.DateTime.Today);
+            vm.EndedContractsCount = await _context.Contracts.CountAsync(c => c.DateEnded.HasValue && c.DateEnded.Value <= System.DateTime.Today);
 
             vm.RecentContracts = await _context.Contracts
                 .Include(c => c.Client)

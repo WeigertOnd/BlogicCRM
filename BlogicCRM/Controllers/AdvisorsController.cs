@@ -19,21 +19,43 @@ public class AdvisorsController : Controller
         }
 
         // GET: Advisors
-        public async Task<IActionResult> Index(string? searchString)
+        public async Task<IActionResult> Index(string? firstName, string? lastName, string? email, string? phone, string? birthNumber, int? age)
         {
             var advisors = _context.Advisors.AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(searchString))
+            if (!string.IsNullOrWhiteSpace(firstName))
             {
-                var s = searchString.Trim();
-                if (int.TryParse(s, out var n))
-                {
-                    advisors = advisors.Where(a => a.FirstName.Contains(s) || a.LastName.Contains(s) || a.Email.Contains(s) || a.Phone.Contains(s) || a.BirthNumber.Contains(s) || a.Age == n);
-                }
-                else
-                {
-                    advisors = advisors.Where(a => a.FirstName.Contains(s) || a.LastName.Contains(s) || a.Email.Contains(s) || a.Phone.Contains(s) || a.BirthNumber.Contains(s));
-                }
+                var s = firstName.Trim();
+                advisors = advisors.Where(a => a.FirstName.Contains(s));
+            }
+
+            if (!string.IsNullOrWhiteSpace(lastName))
+            {
+                var s = lastName.Trim();
+                advisors = advisors.Where(a => a.LastName.Contains(s));
+            }
+
+            if (!string.IsNullOrWhiteSpace(email))
+            {
+                var s = email.Trim();
+                advisors = advisors.Where(a => a.Email.Contains(s));
+            }
+
+            if (!string.IsNullOrWhiteSpace(phone))
+            {
+                var s = phone.Trim();
+                advisors = advisors.Where(a => a.Phone != null && a.Phone.StartsWith(s));
+            }
+
+            if (!string.IsNullOrWhiteSpace(birthNumber))
+            {
+                var s = birthNumber.Trim();
+                advisors = advisors.Where(a => a.BirthNumber.Contains(s));
+            }
+
+            if (age.HasValue)
+            {
+                advisors = advisors.Where(a => a.Age == age.Value);
             }
 
             var list = await advisors.OrderBy(a => a.LastName).ThenBy(a => a.FirstName).ToListAsync();

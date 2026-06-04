@@ -13,7 +13,7 @@ namespace BlogicCRM.ViewModels
         public string ConfirmEmail { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Heslo je povinné.")]
-        [MinLength(10, ErrorMessage = "Heslo musí mít alespoň 10 znaků.")]
+        [RegularExpression(@"^(?=.*[A-Z])(?=.*\d).{10,}$", ErrorMessage = "Heslo musí mít alespoň 10 znaků, obsahovat alespoň jedno velké písmeno a alespoň jedno číslo.")]
         public string Password { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Potvrzení hesla je povinné.")]

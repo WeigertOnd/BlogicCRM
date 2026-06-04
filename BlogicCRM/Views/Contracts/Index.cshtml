@@ -10,33 +10,48 @@
         <a class="btn btn-primary" asp-action="Create">Přidat smlouvu</a>
     </div>
     <div class="card-body">
-        <form method="get" class="mb-3">
-            @{
-                var status = Context.Request.Query["statusFilter"].ToString();
-                var selAll = string.IsNullOrEmpty(status) || status == "All";
-                var selActive = status == "Active";
-                var selEnded = status == "Ended";
-            }
-            <div class="row g-2">
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <input type="text" name="searchString" value="@Context.Request.Query["searchString"]" class="form-control" placeholder="Hledat podle evidenčního čísla, instituce, klienta nebo správce" />
+        <div class="card mb-3">
+            <div class="card-body">
+                <form method="get">
+                    <div class="row g-2">
+                        <div class="col-md-3">
+                            <input type="text" name="registrationNumber" value="@Context.Request.Query["registrationNumber"]" class="form-control" placeholder="Evidenční číslo" />
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" name="institution" value="@Context.Request.Query["institution"]" class="form-control" placeholder="Instituce" />
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" name="clientFirstName" value="@Context.Request.Query["clientFirstName"]" class="form-control" placeholder="Jméno klienta" />
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" name="clientLastName" value="@Context.Request.Query["clientLastName"]" class="form-control" placeholder="Příjmení klienta" />
+                        </div>
+                        <div class="col-md-3 mt-2">
+                            <input type="text" name="managerFirstName" value="@Context.Request.Query["managerFirstName"]" class="form-control" placeholder="Jméno správce" />
+                        </div>
+                        <div class="col-md-3 mt-2">
+                            <input type="text" name="managerLastName" value="@Context.Request.Query["managerLastName"]" class="form-control" placeholder="Příjmení správce" />
+                        </div>
+                        <div class="col-md-3 mt-2">
+                            @{
+                                var status = Context.Request.Query["statusFilter"].ToString();
+                                var statusItems = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+                                {
+                                    new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem { Value = "All", Text = "Všechny", Selected = string.IsNullOrEmpty(status) || status == "All" },
+                                    new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem { Value = "Active", Text = "Aktivní", Selected = status == "Active" },
+                                    new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem { Value = "Ended", Text = "Ukončené", Selected = status == "Ended" }
+                                };
+                            }
+                            <select name="statusFilter" class="form-select" asp-items="statusItems"></select>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-center mt-2">
+                            <button class="btn btn-outline-secondary me-2" type="submit">Filtrovat</button>
+                            <a class="btn btn-outline-secondary" href="@Url.Action("Index", "Contracts")">Zrušit filtr</a>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-3">
-                    <select name="statusFilter" class="form-select">
-                        <option value="All" selected="@(selAll ? "selected" : null)">Všechny</option>
-                        <option value="Active" selected="@(selActive ? "selected" : null)">Aktivní</option>
-                        <option value="Ended" selected="@(selEnded ? "selected" : null)">Ukončené</option>
-                    </select>
-                </div>
-                <div class="col-md-3 d-flex">
-                    <button class="btn btn-outline-secondary me-2" type="submit">Hledat</button>
-                    <a class="btn btn-outline-secondary" href="@Url.Action("Index", "Contracts")">Zrušit filtr</a>
-                </div>
+                </form>
             </div>
-        </form>
-
+        </div>
         @if (!Model.Any())
         {
             <p>Nebyly nalezeny žádné záznamy odpovídající filtru.</p>
@@ -68,7 +83,7 @@
                             <td>@item.DateValidFrom.ToShortDateString()</td>
                             <td>@(item.DateEnded.HasValue ? item.DateEnded.Value.ToShortDateString() : "-")</td>
                             <td>
-                                @if (!item.DateEnded.HasValue || item.DateEnded.Value >= DateTime.Today)
+                                @if (!item.DateEnded.HasValue || item.DateEnded.Value > DateTime.Today)
                                 {
                                     <span class="badge bg-success">Aktivní</span>
                                 }
@@ -80,7 +95,23 @@
                             <td>
                                 <a class="btn btn-sm btn-outline-primary me-1" asp-action="Details" asp-route-id="@item.Id">Detail</a>
                                 <a class="btn btn-sm btn-outline-secondary me-1" asp-action="Edit" asp-route-id="@item.Id">Upravit</a>
-                                <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Smazat</a>
+                                <a class="btn btn-sm btn-outline-danger me-1" asp-action="Delete" asp-route-id="@item.Id">Smazat</a>
+                                @if (!item.DateEnded.HasValue || item.DateEnded.Value > DateTime.Today)
+                                {
+                                    <form asp-action="EndContract" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <input type="hidden" name="returnUrl" value="@Url.Action("Index", "Contracts")" />
+                                        <button type="submit" class="btn btn-sm btn-outline-warning">Ukončit</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form asp-action="ReactivateContract" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <input type="hidden" name="returnUrl" value="@Url.Action("Index", "Contracts")" />
+                                        <button type="submit" class="btn btn-sm btn-outline-success">Obnovit</button>
+                                    </form>
+                                }
                             </td>
                         </tr>
                     }

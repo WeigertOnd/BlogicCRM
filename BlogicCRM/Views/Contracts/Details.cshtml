@@ -33,7 +33,7 @@
 
             <dt class="col-sm-3">Stav</dt>
             <dd class="col-sm-9">
-                @if (!Model.DateEnded.HasValue || Model.DateEnded.Value >= DateTime.Today)
+                @if (!Model.DateEnded.HasValue || Model.DateEnded.Value > DateTime.Today)
                 {
                     <span class="badge bg-success">Aktivní</span>
                 }
@@ -54,6 +54,24 @@
     </div>
     <div class="card-footer text-end">
         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary me-2">Upravit</a>
+        @if (!Model.DateEnded.HasValue || Model.DateEnded.Value >= DateTime.Today)
+        {
+            <form asp-action="EndContract" method="post" class="d-inline me-2">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <input type="hidden" name="returnUrl" value="@Url.Action("Details", "Contracts", new { id = Model.Id })" />
+                <button type="submit" class="btn btn-outline-warning">Ukončit</button>
+            </form>
+        }
+        else
+        {
+            <form asp-action="ReactivateContract" method="post" class="d-inline me-2">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <input type="hidden" name="returnUrl" value="@Url.Action("Details", "Contracts", new { id = Model.Id })" />
+                <button type="submit" class="btn btn-outline-success">Obnovit</button>
+            </form>
+        }
         <a asp-action="Index" class="btn btn-secondary">Zpět na seznam smluv</a>
     </div>
 </div>

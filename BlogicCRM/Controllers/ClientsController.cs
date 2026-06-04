@@ -19,21 +19,43 @@ public class ClientsController : Controller
         }
 
         // GET: Clients
-        public async Task<IActionResult> Index(string? searchString)
+        public async Task<IActionResult> Index(string? firstName, string? lastName, string? email, string? phone, string? birthNumber, int? age)
         {
             var clients = _context.Clients.AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(searchString))
+            if (!string.IsNullOrWhiteSpace(firstName))
             {
-                var s = searchString.Trim();
-                if (int.TryParse(s, out var n))
-                {
-                    clients = clients.Where(c => c.FirstName.Contains(s) || c.LastName.Contains(s) || c.Email.Contains(s) || c.Phone.Contains(s) || c.BirthNumber.Contains(s) || c.Age == n);
-                }
-                else
-                {
-                    clients = clients.Where(c => c.FirstName.Contains(s) || c.LastName.Contains(s) || c.Email.Contains(s) || c.Phone.Contains(s) || c.BirthNumber.Contains(s));
-                }
+                var s = firstName.Trim();
+                clients = clients.Where(c => c.FirstName.Contains(s));
+            }
+
+            if (!string.IsNullOrWhiteSpace(lastName))
+            {
+                var s = lastName.Trim();
+                clients = clients.Where(c => c.LastName.Contains(s));
+            }
+
+            if (!string.IsNullOrWhiteSpace(email))
+            {
+                var s = email.Trim();
+                clients = clients.Where(c => c.Email.Contains(s));
+            }
+
+            if (!string.IsNullOrWhiteSpace(phone))
+            {
+                var s = phone.Trim();
+                clients = clients.Where(c => c.Phone != null && c.Phone.StartsWith(s));
+            }
+
+            if (!string.IsNullOrWhiteSpace(birthNumber))
+            {
+                var s = birthNumber.Trim();
+                clients = clients.Where(c => c.BirthNumber.Contains(s));
+            }
+
+            if (age.HasValue)
+            {
+                clients = clients.Where(c => c.Age == age.Value);
             }
 
             var list = await clients.OrderBy(c => c.LastName).ThenBy(c => c.FirstName).ToListAsync();

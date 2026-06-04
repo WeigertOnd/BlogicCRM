@@ -22,32 +22,57 @@ public class ContractsController : Controller
         }
 
         // GET: Contracts
-        public async Task<IActionResult> Index(string? searchString, string? statusFilter)
+        public async Task<IActionResult> Index(string? registrationNumber, string? institution, string? clientFirstName, string? clientLastName, string? managerFirstName, string? managerLastName, string? statusFilter)
         {
             var contracts = _context.Contracts
                 .Include(c => c.Client)
                 .Include(c => c.ManagerAdvisor)
                 .AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(searchString))
+            if (!string.IsNullOrWhiteSpace(registrationNumber))
             {
-                var s = searchString.Trim();
-                contracts = contracts.Where(c => c.RegistrationNumber.Contains(s)
-                    || c.Institution.Contains(s)
-                    || (c.Client != null && (c.Client.FirstName.Contains(s) || c.Client.LastName.Contains(s)))
-                    || (c.ManagerAdvisor != null && (c.ManagerAdvisor.FirstName.Contains(s) || c.ManagerAdvisor.LastName.Contains(s))));
+                var s = registrationNumber.Trim();
+                contracts = contracts.Where(c => c.RegistrationNumber.Contains(s));
             }
 
-            // status filter: "All" or null => all, "Active" => not ended or ended >= today, "Ended" => ended < today
+            if (!string.IsNullOrWhiteSpace(institution))
+            {
+                var s = institution.Trim();
+                contracts = contracts.Where(c => c.Institution.Contains(s));
+            }
+
+            if (!string.IsNullOrWhiteSpace(clientFirstName))
+            {
+                var s = clientFirstName.Trim();
+                contracts = contracts.Where(c => c.Client != null && c.Client.FirstName.Contains(s));
+            }
+
+            if (!string.IsNullOrWhiteSpace(clientLastName))
+            {
+                var s = clientLastName.Trim();
+                contracts = contracts.Where(c => c.Client != null && c.Client.LastName.Contains(s));
+            }
+
+            if (!string.IsNullOrWhiteSpace(managerFirstName))
+            {
+                var s = managerFirstName.Trim();
+                contracts = contracts.Where(c => c.ManagerAdvisor != null && c.ManagerAdvisor.FirstName.Contains(s));
+            }
+
+            if (!string.IsNullOrWhiteSpace(managerLastName))
+            {
+                var s = managerLastName.Trim();
+                contracts = contracts.Where(c => c.ManagerAdvisor != null && c.ManagerAdvisor.LastName.Contains(s));
+            }
+
             if (!string.IsNullOrWhiteSpace(statusFilter) && statusFilter != "All")
             {
                 if (statusFilter == "Active")
                 {
-                    contracts = contracts.Where(c => !c.DateEnded.HasValue || c.DateEnded.Value >= DateTime.Today);
+                    contracts = contracts.Where(c => !c.DateEnded.HasValue || c.DateEnded.Value > DateTime.Today);
                 }
                 else if (statusFilter == "Ended")
                 {
-                    contracts = contracts.Where(c => c.DateEnded.HasValue && c.DateEnded.Value < DateTime.Today);
+                    contracts = contracts.Where(c => c.DateEnded.HasValue && c.DateEnded.Value <= DateTime.Today);
                 }
             }
 
@@ -257,6 +282,40 @@ public class ContractsController : Controller
             _context.Contracts.Remove(contract);
             await _context.SaveChangesAsync();
             TempData["Success"] = "Smlouva byla úspěšně smazána.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        // POST: Contracts/EndContract/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EndContract(int id, string? returnUrl)
+        {
+            var contract = await _context.Contracts.FindAsync(id);
+            if (contract == null) return NotFound();
+
+            contract.DateEnded = DateTime.Today;
+            _context.Contracts.Update(contract);
+            await _context.SaveChangesAsync();
+            TempData["Success"] = "Smlouva byla ukončena.";
+
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl)) return Redirect(returnUrl);
+            return RedirectToAction(nameof(Index));
+        }
+
+        // POST: Contracts/ReactivateContract/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ReactivateContract(int id, string? returnUrl)
+        {
+            var contract = await _context.Contracts.FindAsync(id);
+            if (contract == null) return NotFound();
+
+            contract.DateEnded = null;
+            _context.Contracts.Update(contract);
+            await _context.SaveChangesAsync();
+            TempData["Success"] = "Smlouva byla obnovena.";
+
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl)) return Redirect(returnUrl);
             return RedirectToAction(nameof(Index));
         }
     }
