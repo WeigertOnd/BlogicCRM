@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlogicCRM.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260604105203_InitialCreate")]
+    [Migration("20260604112224_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -33,14 +33,16 @@ namespace BlogicCRM.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("Age")
+                    b.Property<int>("Age")
                         .HasColumnType("int");
 
                     b.Property<string>("BirthNumber")
+                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
@@ -55,6 +57,7 @@ namespace BlogicCRM.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Phone")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -68,9 +71,9 @@ namespace BlogicCRM.Migrations
                             Id = 1,
                             Age = 49,
                             BirthNumber = "750303/1111",
-                            Email = "anna.kralova@example.com",
+                            Email = "anna.kralova@firma.cz",
                             FirstName = "Anna",
-                            LastName = "Kralova",
+                            LastName = "Králová",
                             Phone = "+420111222333"
                         },
                         new
@@ -78,10 +81,20 @@ namespace BlogicCRM.Migrations
                             Id = 2,
                             Age = 39,
                             BirthNumber = "850404/2222",
-                            Email = "martin.dvorak@example.com",
+                            Email = "martin.dvorak@firma.cz",
                             FirstName = "Martin",
-                            LastName = "Dvorak",
+                            LastName = "Dvořák",
                             Phone = "+420444555666"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Age = 41,
+                            BirthNumber = "820505/3333",
+                            Email = "lucie.novotna@firma.cz",
+                            FirstName = "Lucie",
+                            LastName = "Novotná",
+                            Phone = "+420777888999"
                         });
                 });
 
@@ -93,14 +106,16 @@ namespace BlogicCRM.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("Age")
+                    b.Property<int>("Age")
                         .HasColumnType("int");
 
                     b.Property<string>("BirthNumber")
+                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
@@ -115,6 +130,7 @@ namespace BlogicCRM.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Phone")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -128,7 +144,7 @@ namespace BlogicCRM.Migrations
                             Id = 1,
                             Age = 44,
                             BirthNumber = "800101/1234",
-                            Email = "jan.novak@example.com",
+                            Email = "jan.novak@priklad.cz",
                             FirstName = "Jan",
                             LastName = "Novák",
                             Phone = "+420123456789"
@@ -138,9 +154,9 @@ namespace BlogicCRM.Migrations
                             Id = 2,
                             Age = 34,
                             BirthNumber = "900202/4321",
-                            Email = "petr.svoboda@example.com",
-                            FirstName = "Petr",
-                            LastName = "Svoboda",
+                            Email = "petra.svobodova@priklad.cz",
+                            FirstName = "Petra",
+                            LastName = "Svobodová",
                             Phone = "+420987654321"
                         });
                 });
@@ -156,16 +172,17 @@ namespace BlogicCRM.Migrations
                     b.Property<int>("ClientId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("DateClosed")
+                    b.Property<DateTime>("DateClosed")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DateEnded")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DateValidFrom")
+                    b.Property<DateTime>("DateValidFrom")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Institution")
+                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
@@ -190,10 +207,10 @@ namespace BlogicCRM.Migrations
                         {
                             Id = 1,
                             ClientId = 1,
-                            DateClosed = new DateTime(2026, 5, 5, 10, 52, 0, 847, DateTimeKind.Utc).AddTicks(7612),
-                            DateEnded = new DateTime(2027, 6, 4, 10, 52, 0, 847, DateTimeKind.Utc).AddTicks(7620),
-                            DateValidFrom = new DateTime(2026, 5, 6, 10, 52, 0, 847, DateTimeKind.Utc).AddTicks(7619),
-                            Institution = "Acme Corp",
+                            DateClosed = new DateTime(2026, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateEnded = new DateTime(2027, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateValidFrom = new DateTime(2026, 1, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Institution = "ČSOB",
                             ManagerAdvisorId = 1,
                             RegistrationNumber = "C-2026-001"
                         },
@@ -201,12 +218,22 @@ namespace BlogicCRM.Migrations
                         {
                             Id = 2,
                             ClientId = 2,
-                            DateClosed = new DateTime(2026, 5, 25, 10, 52, 0, 847, DateTimeKind.Utc).AddTicks(7649),
-                            DateEnded = new DateTime(2026, 12, 4, 10, 52, 0, 847, DateTimeKind.Utc).AddTicks(7651),
-                            DateValidFrom = new DateTime(2026, 5, 26, 10, 52, 0, 847, DateTimeKind.Utc).AddTicks(7650),
-                            Institution = "Beta Ltd",
+                            DateClosed = new DateTime(2026, 2, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateEnded = new DateTime(2026, 8, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateValidFrom = new DateTime(2026, 2, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Institution = "AEGON",
                             ManagerAdvisorId = 2,
                             RegistrationNumber = "C-2026-002"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ClientId = 1,
+                            DateClosed = new DateTime(2026, 3, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateValidFrom = new DateTime(2026, 3, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Institution = "AXA",
+                            ManagerAdvisorId = 3,
+                            RegistrationNumber = "C-2026-003"
                         });
                 });
 
@@ -239,6 +266,16 @@ namespace BlogicCRM.Migrations
                         {
                             ContractId = 2,
                             AdvisorId = 2
+                        },
+                        new
+                        {
+                            ContractId = 3,
+                            AdvisorId = 3
+                        },
+                        new
+                        {
+                            ContractId = 3,
+                            AdvisorId = 1
                         });
                 });
 

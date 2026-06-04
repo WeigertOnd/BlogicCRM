@@ -13,9 +13,10 @@ namespace BlogicCRM.Models
         [Display(Name = "Evidenční číslo")]
         public string RegistrationNumber { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "Instituce je povinná")]
         [StringLength(200, ErrorMessage = "Instituce nesmí být delší než {1} znaků")]
         [Display(Name = "Instituce")]
-        public string? Institution { get; set; }
+        public string Institution { get; set; } = string.Empty;
 
         [Display(Name = "Klient")]
         [Range(1, int.MaxValue, ErrorMessage = "Vyberte klienta")]
@@ -29,11 +30,11 @@ namespace BlogicCRM.Models
 
         [DataType(DataType.Date)]
         [Display(Name = "Datum uzavření")]
-        public DateTime? DateClosed { get; set; }
+        public DateTime DateClosed { get; set; }
 
         [DataType(DataType.Date)]
         [Display(Name = "Datum platnosti")]
-        public DateTime? DateValidFrom { get; set; }
+        public DateTime DateValidFrom { get; set; }
 
         [DataType(DataType.Date)]
         [Display(Name = "Datum ukončení")]

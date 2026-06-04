@@ -1,0 +1,57 @@
+@model IEnumerable<BlogicCRM.Models.Client>
+
+@{
+    ViewData["Title"] = "Seznam klientů";
+}
+
+<h1>Seznam klientů</h1>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">Přidat klienta</a>
+</p>
+
+<form method="get" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="searchString" value="@Context.Request.Query["searchString"]" class="form-control" placeholder="Hledejte podle jména, příjmení nebo e-mailu" />
+        <button class="btn btn-outline-secondary" type="submit">Hledat</button>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <p>Zatím nejsou evidováni žádní klienti.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Jméno</th>
+                <th>Příjmení</th>
+                <th>E-mail</th>
+                <th>Telefon</th>
+                <th>Rodné číslo</th>
+                <th>Věk</th>
+                <th>Akce</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.FirstName</td>
+                <td>@item.LastName</td>
+                <td>@item.Email</td>
+                <td>@item.Phone</td>
+                <td>@item.BirthNumber</td>
+                <td>@item.Age</td>
+                <td>
+                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.Id">Detail</a>
+                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id">Upravit</a>
+                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id">Smazat</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

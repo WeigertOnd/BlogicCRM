@@ -50,24 +50,31 @@ namespace BlogicCRM.Data
 
             // Seed data (minimal)
             modelBuilder.Entity<Client>().HasData(
-                new Client { Id = 1, FirstName = "Jan", LastName = "Novák", Email = "jan.novak@example.com", Phone = "+420123456789", BirthNumber = "800101/1234", Age = 44 },
-                new Client { Id = 2, FirstName = "Petr", LastName = "Svoboda", Email = "petr.svoboda@example.com", Phone = "+420987654321", BirthNumber = "900202/4321", Age = 34 }
+                new Client { Id = 1, FirstName = "Jan", LastName = "Novák", Email = "jan.novak@priklad.cz", Phone = "+420123456789", BirthNumber = "800101/1234", Age = 44 },
+                new Client { Id = 2, FirstName = "Petra", LastName = "Svobodová", Email = "petra.svobodova@priklad.cz", Phone = "+420987654321", BirthNumber = "900202/4321", Age = 34 }
             );
 
             modelBuilder.Entity<Advisor>().HasData(
-                new Advisor { Id = 1, FirstName = "Anna", LastName = "Kralova", Email = "anna.kralova@example.com", Phone = "+420111222333", BirthNumber = "750303/1111", Age = 49 },
-                new Advisor { Id = 2, FirstName = "Martin", LastName = "Dvorak", Email = "martin.dvorak@example.com", Phone = "+420444555666", BirthNumber = "850404/2222", Age = 39 }
+                new Advisor { Id = 1, FirstName = "Anna", LastName = "Králová", Email = "anna.kralova@firma.cz", Phone = "+420111222333", BirthNumber = "750303/1111", Age = 49 },
+                new Advisor { Id = 2, FirstName = "Martin", LastName = "Dvořák", Email = "martin.dvorak@firma.cz", Phone = "+420444555666", BirthNumber = "850404/2222", Age = 39 },
+                new Advisor { Id = 3, FirstName = "Lucie", LastName = "Novotná", Email = "lucie.novotna@firma.cz", Phone = "+420777888999", BirthNumber = "820505/3333", Age = 41 }
             );
 
             modelBuilder.Entity<Contract>().HasData(
-                new Contract { Id = 1, RegistrationNumber = "C-2026-001", Institution = "Acme Corp", ClientId = 1, ManagerAdvisorId = 1, DateClosed = DateTime.UtcNow.AddDays(-30), DateValidFrom = DateTime.UtcNow.AddDays(-29), DateEnded = DateTime.UtcNow.AddYears(1) },
-                new Contract { Id = 2, RegistrationNumber = "C-2026-002", Institution = "Beta Ltd", ClientId = 2, ManagerAdvisorId = 2, DateClosed = DateTime.UtcNow.AddDays(-10), DateValidFrom = DateTime.UtcNow.AddDays(-9), DateEnded = DateTime.UtcNow.AddMonths(6) }
+                new Contract { Id = 1, RegistrationNumber = "C-2026-001", Institution = "ČSOB", ClientId = 1, ManagerAdvisorId = 1, DateClosed = new DateTime(2026, 1, 15), DateValidFrom = new DateTime(2026, 1, 16), DateEnded = new DateTime(2027, 1, 15) },
+                new Contract { Id = 2, RegistrationNumber = "C-2026-002", Institution = "AEGON", ClientId = 2, ManagerAdvisorId = 2, DateClosed = new DateTime(2026, 2, 10), DateValidFrom = new DateTime(2026, 2, 11), DateEnded = new DateTime(2026, 8, 11) },
+                new Contract { Id = 3, RegistrationNumber = "C-2026-003", Institution = "AXA", ClientId = 1, ManagerAdvisorId = 3, DateClosed = new DateTime(2026, 3, 5), DateValidFrom = new DateTime(2026, 3, 6), DateEnded = null }
             );
 
             modelBuilder.Entity<ContractAdvisor>().HasData(
+                // Contract 1 participants: manager (1) and advisor 2
                 new ContractAdvisor { ContractId = 1, AdvisorId = 1 },
                 new ContractAdvisor { ContractId = 1, AdvisorId = 2 },
-                new ContractAdvisor { ContractId = 2, AdvisorId = 2 }
+                // Contract 2 participants: manager (2)
+                new ContractAdvisor { ContractId = 2, AdvisorId = 2 },
+                // Contract 3 participants: manager (3) and advisor 1
+                new ContractAdvisor { ContractId = 3, AdvisorId = 3 },
+                new ContractAdvisor { ContractId = 3, AdvisorId = 1 }
             );
         }
     }
