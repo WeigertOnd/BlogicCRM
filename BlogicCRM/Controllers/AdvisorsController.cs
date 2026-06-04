@@ -64,6 +64,7 @@ namespace BlogicCRM.Controllers
             {
                 _context.Add(advisor);
                 await _context.SaveChangesAsync();
+                TempData["Success"] = "Poradce byl úspěšně vytvořen.";
                 return RedirectToAction(nameof(Index));
             }
             return View(advisor);
@@ -98,6 +99,7 @@ namespace BlogicCRM.Controllers
                     if (!AdvisorExists(advisor.Id)) return NotFound();
                     else throw;
                 }
+                TempData["Success"] = "Poradce byl úspěšně upraven.";
                 return RedirectToAction(nameof(Index));
             }
             return View(advisor);
@@ -119,6 +121,7 @@ namespace BlogicCRM.Controllers
             if ((advisor.ManagedContracts != null && advisor.ManagedContracts.Any()) || (advisor.ContractAdvisors != null && advisor.ContractAdvisors.Any()))
             {
                 ViewBag.ErrorMessage = "Poradce nelze smazat, protože je přiřazen ke smlouvě.";
+                TempData["Error"] = "Poradce nelze smazat, protože je přiřazen ke smlouvě.";
             }
 
             return View(advisor);
@@ -140,11 +143,13 @@ namespace BlogicCRM.Controllers
             if ((advisor.ManagedContracts != null && advisor.ManagedContracts.Any()) || (advisor.ContractAdvisors != null && advisor.ContractAdvisors.Any()))
             {
                 ViewBag.ErrorMessage = "Poradce nelze smazat, protože je přiřazen ke smlouvě.";
+                TempData["Error"] = "Poradce nelze smazat, protože je přiřazen ke smlouvě.";
                 return View(advisor);
             }
 
             _context.Advisors.Remove(advisor);
             await _context.SaveChangesAsync();
+            TempData["Success"] = "Poradce byl úspěšně smazán.";
             return RedirectToAction(nameof(Index));
         }
 

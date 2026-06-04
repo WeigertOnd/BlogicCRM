@@ -27,7 +27,7 @@ namespace BlogicCRM.ViewModels
         [Display(Name = "Správce smlouvy")]
         public int ManagerAdvisorId { get; set; }
 
-        [Display(Name = "Účastníci")]
+        [Display(Name = "Další účastníci smlouvy")]
         public List<int> SelectedAdvisorIds { get; set; } = new List<int>();
 
         [Required(ErrorMessage = "Datum uzavření je povinné")]

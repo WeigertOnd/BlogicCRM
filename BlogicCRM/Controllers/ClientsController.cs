@@ -61,6 +61,7 @@ namespace BlogicCRM.Controllers
             {
                 _context.Add(client);
                 await _context.SaveChangesAsync();
+                TempData["Success"] = "Klient byl úspěšně vytvořen.";
                 return RedirectToAction(nameof(Index));
             }
             return View(client);
@@ -95,6 +96,7 @@ namespace BlogicCRM.Controllers
                     if (!ClientExists(client.Id)) return NotFound();
                     else throw;
                 }
+                TempData["Success"] = "Klient byl úspěšně upraven.";
                 return RedirectToAction(nameof(Index));
             }
             return View(client);
@@ -114,6 +116,7 @@ namespace BlogicCRM.Controllers
             if (client.Contracts != null && client.Contracts.Any())
             {
                 ViewBag.ErrorMessage = "Klienta nelze smazat, protože má přiřazené smlouvy.";
+                TempData["Error"] = "Klienta nelze smazat, protože má přiřazené smlouvy.";
             }
 
             return View(client);
@@ -133,11 +136,13 @@ namespace BlogicCRM.Controllers
             if (client.Contracts != null && client.Contracts.Any())
             {
                 ViewBag.ErrorMessage = "Klienta nelze smazat, protože má přiřazené smlouvy.";
+                TempData["Error"] = "Klienta nelze smazat, protože má přiřazené smlouvy.";
                 return View(client);
             }
 
             _context.Clients.Remove(client);
             await _context.SaveChangesAsync();
+            TempData["Success"] = "Klient byl úspěšně smazán.";
             return RedirectToAction(nameof(Index));
         }
 

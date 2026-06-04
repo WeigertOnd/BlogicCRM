@@ -36,16 +36,17 @@
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Účastníci</label>
+                <label class="form-label">Další účastníci smlouvy</label>
                 <div>
                     @foreach (var a in Model.Advisors)
                     {
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="SelectedAdvisorIds" value="@a.Id" id="adv_@a.Id" />
+                        <div class="form-check" data-advisor-id="@a.Id">
+                            <input class="form-check-input" type="checkbox" name="SelectedAdvisorIds" value="@a.Id" id="adv_@a.Id" data-advisor-id="@a.Id" />
                             <label class="form-check-label" for="adv_@a.Id">@a.FirstName @a.LastName</label>
                         </div>
                     }
                 </div>
+                <div class="form-text">Správce smlouvy je mezi účastníky přidán automaticky.</div>
                 <span asp-validation-for="SelectedAdvisorIds" class="text-danger"></span>
             </div>
 
@@ -74,5 +75,28 @@
 </div>
 
 @section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var managerSelect = document.getElementById('ManagerAdvisorId');
+            if (!managerSelect) return;
+
+            function updateAdvisorVisibility() {
+                var managerId = managerSelect.value;
+                document.querySelectorAll('[data-advisor-id]').forEach(function (el) {
+                    var aid = el.getAttribute('data-advisor-id');
+                    if (aid === managerId && managerId !== '') {
+                        el.style.display = 'none';
+                        var cb = el.querySelector('input[type=checkbox]');
+                        if (cb) cb.checked = false;
+                    } else {
+                        el.style.display = '';
+                    }
+                });
+            }
+
+            managerSelect.addEventListener('change', updateAdvisorVisibility);
+            updateAdvisorVisibility();
+        });
+    </script>
     <partial name="_ValidationScriptsPartial" />
 }

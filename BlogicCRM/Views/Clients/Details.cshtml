@@ -56,7 +56,7 @@
                             <td>@c.Institution</td>
                             <td>@c.ManagerAdvisor?.FirstName @c.ManagerAdvisor?.LastName</td>
                             <td>@(c.DateValidFrom.ToShortDateString())</td>
-                            <td><a class="btn btn-sm btn-outline-primary" href="#">Detail smlouvy</a></td>
+                            <td><a class="btn btn-sm btn-outline-primary" asp-controller="Contracts" asp-action="Details" asp-route-id="@c.Id">Detail smlouvy</a></td>
                         </tr>
                     }
                     </tbody>

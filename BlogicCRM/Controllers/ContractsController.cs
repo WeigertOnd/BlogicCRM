@@ -72,16 +72,7 @@ namespace BlogicCRM.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ContractFormViewModel vm)
         {
-            // validate participants
-            if (vm.SelectedAdvisorIds == null || !vm.SelectedAdvisorIds.Any())
-            {
-                ModelState.AddModelError(nameof(vm.SelectedAdvisorIds), "Smlouva musí mít alespoň jednoho účastníka.");
-            }
-
-            if (!vm.SelectedAdvisorIds.Contains(vm.ManagerAdvisorId))
-            {
-                ModelState.AddModelError(nameof(vm.ManagerAdvisorId), "Správce smlouvy musí být zároveň účastníkem smlouvy.");
-            }
+            // Note: ManagerAdvisor is required and will be automatically added to participants.
 
             if (vm.DateEnded.HasValue && vm.DateEnded.Value < vm.DateClosed)
             {
@@ -104,13 +95,16 @@ namespace BlogicCRM.Controllers
                 _context.Contracts.Add(contract);
                 await _context.SaveChangesAsync();
 
-                // add participants
-                foreach (var advisorId in vm.SelectedAdvisorIds.Distinct())
+                // add participants including manager (avoid duplicates)
+                var advisorIds = new HashSet<int>(vm.SelectedAdvisorIds ?? new List<int>());
+                advisorIds.Add(vm.ManagerAdvisorId);
+                foreach (var advisorId in advisorIds)
                 {
                     _context.ContractAdvisors.Add(new ContractAdvisor { ContractId = contract.Id, AdvisorId = advisorId });
                 }
                 await _context.SaveChangesAsync();
 
+                TempData["Success"] = "Smlouva byla úspěšně vytvořena.";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -156,15 +150,7 @@ namespace BlogicCRM.Controllers
         {
             if (id != vm.Id) return NotFound();
 
-            if (vm.SelectedAdvisorIds == null || !vm.SelectedAdvisorIds.Any())
-            {
-                ModelState.AddModelError(nameof(vm.SelectedAdvisorIds), "Smlouva musí mít alespoň jednoho účastníka.");
-            }
-
-            if (!vm.SelectedAdvisorIds.Contains(vm.ManagerAdvisorId))
-            {
-                ModelState.AddModelError(nameof(vm.ManagerAdvisorId), "Správce smlouvy musí být zároveň účastníkem smlouvy.");
-            }
+            // Note: ManagerAdvisor is required and will be automatically added to participants.
 
             if (vm.DateEnded.HasValue && vm.DateEnded.Value < vm.DateClosed)
             {
@@ -187,7 +173,7 @@ namespace BlogicCRM.Controllers
                 contract.DateValidFrom = vm.DateValidFrom;
                 contract.DateEnded = vm.DateEnded;
 
-                // update M:N ContractAdvisor: remove all existing and add new ones
+                // update M:N ContractAdvisor: remove all existing and add new ones (include manager, avoid duplicates)
                 var existing = contract.ContractAdvisors?.ToList() ?? new List<ContractAdvisor>();
                 if (existing.Any())
                 {
@@ -195,7 +181,9 @@ namespace BlogicCRM.Controllers
                     await _context.SaveChangesAsync();
                 }
 
-                foreach (var advisorId in vm.SelectedAdvisorIds.Distinct())
+                var advisorIds = new HashSet<int>(vm.SelectedAdvisorIds ?? new List<int>());
+                advisorIds.Add(vm.ManagerAdvisorId);
+                foreach (var advisorId in advisorIds)
                 {
                     _context.ContractAdvisors.Add(new ContractAdvisor { ContractId = contract.Id, AdvisorId = advisorId });
                 }
@@ -203,6 +191,7 @@ namespace BlogicCRM.Controllers
                 _context.Contracts.Update(contract);
                 await _context.SaveChangesAsync();
 
+                TempData["Success"] = "Smlouva byla úspěšně upravena.";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -249,6 +238,7 @@ namespace BlogicCRM.Controllers
 
             _context.Contracts.Remove(contract);
             await _context.SaveChangesAsync();
+            TempData["Success"] = "Smlouva byla úspěšně smazána.";
             return RedirectToAction(nameof(Index));
         }
     }
