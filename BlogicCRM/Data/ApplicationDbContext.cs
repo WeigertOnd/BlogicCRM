@@ -14,6 +14,7 @@ namespace BlogicCRM.Data
         public DbSet<Advisor> Advisors => Set<Advisor>();
         public DbSet<Contract> Contracts => Set<Contract>();
         public DbSet<ContractAdvisor> ContractAdvisors => Set<ContractAdvisor>();
+        public DbSet<BlogicCRM.Models.UserAccount> UserAccounts => Set<BlogicCRM.Models.UserAccount>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -76,6 +77,12 @@ namespace BlogicCRM.Data
                 new ContractAdvisor { ContractId = 3, AdvisorId = 3 },
                 new ContractAdvisor { ContractId = 3, AdvisorId = 1 }
             );
+
+            // UserAccounts table
+            modelBuilder.Entity<BlogicCRM.Models.UserAccount>(eb =>
+            {
+                eb.HasIndex(u => u.Email).IsUnique();
+            });
         }
     }
 }

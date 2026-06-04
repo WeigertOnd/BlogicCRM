@@ -1,0 +1,43 @@
+@model BlogicCRM.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Registrace";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Registrace</h5>
+    </div>
+    <div class="card-body">
+        <form asp-action="Register" method="post">
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="ConfirmEmail" class="form-label">Potvrzení e-mailu</label>
+                <input asp-for="ConfirmEmail" class="form-control" />
+                <span asp-validation-for="ConfirmEmail" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" type="password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="ConfirmPassword" class="form-label">Potvrzení hesla</label>
+                <input asp-for="ConfirmPassword" type="password" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center">
+                <a asp-action="Login" class="btn btn-link">Už máte účet? Přihlaste se.</a>
+                <button type="submit" class="btn btn-primary">Registrovat</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

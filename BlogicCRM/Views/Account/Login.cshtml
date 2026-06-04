@@ -1,3 +1,4 @@
+@model BlogicCRM.ViewModels.LoginViewModel
 @{
     ViewData["Title"] = "Přihlášení";
 }
@@ -9,17 +10,24 @@
     <div class="card-body">
         <form asp-action="Login" method="post">
             <div class="mb-3">
-                <label for="email" class="form-label">E-mail</label>
-                <input id="email" name="email" class="form-control" />
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <label for="password" class="form-label">Heslo</label>
-                <input id="password" name="password" type="password" class="form-control" />
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" type="password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="text-danger">@Html.ValidationSummary()</div>
-            <div class="d-flex justify-content-end">
+            <div class="d-flex justify-content-between">
+                <a asp-action="Register" class="btn btn-link">Nemáte účet? Zaregistrujte se.</a>
                 <button type="submit" class="btn btn-primary">Přihlásit</button>
             </div>
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
