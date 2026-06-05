@@ -44,8 +44,6 @@ namespace BlogicCRM.ViewModels
         [Display(Name = "Datum ukončení")]
         public DateTime? DateEnded { get; set; }
 
-        // Lists for dropdowns/checkboxes
-        // FullName projection for display is handled in the controller (avoid changing models).
         public List<Client> Clients { get; set; } = new List<Client>();
         public List<Advisor> Advisors { get; set; } = new List<Advisor>();
     }

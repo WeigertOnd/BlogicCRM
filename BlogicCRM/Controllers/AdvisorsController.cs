@@ -1,10 +1,10 @@
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
 using BlogicCRM.Data;
 using BlogicCRM.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlogicCRM.Controllers
 {
@@ -18,7 +18,7 @@ public class AdvisorsController : Controller
             _context = context;
         }
 
-        // GET: Advisors
+
         public async Task<IActionResult> Index(string? firstName, string? lastName, string? email, string? phone, string? birthNumber, int? age)
         {
             var advisors = _context.Advisors.AsQueryable();
@@ -68,7 +68,7 @@ public class AdvisorsController : Controller
             return View(list);
         }
 
-        // GET: Advisors/ExportCsv
+
         public async Task<IActionResult> ExportCsv(string? firstName, string? lastName, string? email, string? phone, string? birthNumber, int? age)
         {
             var advisors = _context.Advisors.AsQueryable();
@@ -84,7 +84,7 @@ public class AdvisorsController : Controller
             return File(bytes, "text/csv; charset=utf-8", $"poradci-export-{ts}.csv");
         }
 
-        // GET: Advisors/ExportSingleCsv/5
+
         public async Task<IActionResult> ExportSingleCsv(int id)
         {
             var advisor = await _context.Advisors.FindAsync(id);
@@ -94,7 +94,7 @@ public class AdvisorsController : Controller
             return File(bytes, "text/csv; charset=utf-8", fileName);
         }
 
-        // GET: Advisors/Details/5
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -112,13 +112,13 @@ public class AdvisorsController : Controller
             return View(advisor);
         }
 
-        // GET: Advisors/Create
+
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Advisors/Create
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("FirstName,LastName,Email,Phone,BirthNumber,Age")] Advisor advisor)
@@ -133,7 +133,7 @@ public class AdvisorsController : Controller
             return View(advisor);
         }
 
-        // GET: Advisors/Edit/5
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -143,7 +143,7 @@ public class AdvisorsController : Controller
             return View(advisor);
         }
 
-        // POST: Advisors/Edit/5
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Email,Phone,BirthNumber,Age")] Advisor advisor)
@@ -168,7 +168,7 @@ public class AdvisorsController : Controller
             return View(advisor);
         }
 
-        // GET: Advisors/Delete/5
+
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -180,7 +180,7 @@ public class AdvisorsController : Controller
 
             if (advisor == null) return NotFound();
 
-            // Prevent deletion if advisor is assigned to any contract
+            // Zabránit smazání, pokud je poradce přiřazen ke smlouvě
             if ((advisor.ManagedContracts != null && advisor.ManagedContracts.Any()) || (advisor.ContractAdvisors != null && advisor.ContractAdvisors.Any()))
             {
                 ViewBag.ErrorMessage = "Poradce nelze smazat, protože je přiřazen ke smlouvě.";
@@ -190,7 +190,7 @@ public class AdvisorsController : Controller
             return View(advisor);
         }
 
-        // POST: Advisors/Delete/5
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -202,7 +202,7 @@ public class AdvisorsController : Controller
 
             if (advisor == null) return NotFound();
 
-            // Do not allow deletion if related contracts exist
+            // Nepovolovat smazání, pokud existují související smlouvy
             if ((advisor.ManagedContracts != null && advisor.ManagedContracts.Any()) || (advisor.ContractAdvisors != null && advisor.ContractAdvisors.Any()))
             {
                 ViewBag.ErrorMessage = "Poradce nelze smazat, protože je přiřazen ke smlouvě.";

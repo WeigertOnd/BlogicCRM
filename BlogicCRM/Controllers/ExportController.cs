@@ -1,13 +1,13 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using BlogicCRM.Data;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
-using System.IO.Compression;
-using System.IO;
-using System.Linq;
-using BlogicCRM.Services;
 using System;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Threading.Tasks;
+using BlogicCRM.Data;
+using BlogicCRM.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlogicCRM.Controllers
 {
@@ -21,11 +21,7 @@ namespace BlogicCRM.Controllers
             _context = context;
         }
 
-        // GET: /Export
-        public IActionResult Index()
-        {
-            return View();
-        }
+        public IActionResult Index() => View();
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -62,12 +58,11 @@ namespace BlogicCRM.Controllers
                 var f = files[0];
                 var ts = DateTime.Now.ToString("yyyyMMdd-HHmm");
                 var name = f.Name;
-                // attach timestamp before extension
                 var outName = System.IO.Path.GetFileNameWithoutExtension(name) + "-" + ts + System.IO.Path.GetExtension(name);
                 return File(f.Content, "text/csv; charset=utf-8", outName);
             }
 
-            // Multiple files -> create zip
+
             using var ms = new MemoryStream();
             using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, true))
             {
@@ -78,7 +73,6 @@ namespace BlogicCRM.Controllers
                     es.Write(f.Content, 0, f.Content.Length);
                 }
             }
-            // No-op patch: ensure zip filename is export-dat-yyyyMMdd-HHmm.zip and entries use provided byte[].
             ms.Position = 0;
             var zipTs = DateTime.Now.ToString("yyyyMMdd-HHmm");
             return File(ms.ToArray(), "application/zip", $"export-dat-{zipTs}.zip");

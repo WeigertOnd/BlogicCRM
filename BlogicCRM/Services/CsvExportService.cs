@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using BlogicCRM.Models;
 
 namespace BlogicCRM.Services
@@ -13,7 +12,6 @@ namespace BlogicCRM.Services
 
         static CsvExportService()
         {
-            // keep provider registration (harmless if not needed)
             try { Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance); } catch { }
         }
 

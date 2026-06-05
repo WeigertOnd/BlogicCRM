@@ -41,7 +41,7 @@ namespace BlogicCRM.Controllers
                 return View(vm);
             }
 
-            // demo user
+
             if (vm.Email == DemoEmail && vm.Password == DemoPassword)
             {
                 var claims = new[] { new Claim(ClaimTypes.Name, DemoEmail), new Claim(ClaimTypes.Email, DemoEmail) };
@@ -52,7 +52,7 @@ namespace BlogicCRM.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            // lookup in database
+
             var user = _context.UserAccounts.FirstOrDefault(u => u.Email == vm.Email);
             if (user != null)
             {
@@ -96,7 +96,7 @@ namespace BlogicCRM.Controllers
 
             var email = vm.Email.Trim().ToLowerInvariant();
 
-            // check duplicate
+
             if (_context.UserAccounts.Any(u => u.Email == email))
             {
                 ModelState.AddModelError(string.Empty, "Uživatel s tímto e-mailem již existuje.");

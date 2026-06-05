@@ -1,13 +1,13 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
 using BlogicCRM.Data;
 using BlogicCRM.Models;
 using BlogicCRM.ViewModels;
-using System.Collections.Generic;
-using System;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlogicCRM.Controllers
 {
@@ -21,7 +21,6 @@ public class ContractsController : Controller
             _context = context;
         }
 
-        // GET: Contracts
         public async Task<IActionResult> Index(string? registrationNumber, string? institution, string? clientFirstName, string? clientLastName, string? managerFirstName, string? managerLastName, string? statusFilter)
         {
             var contracts = _context.Contracts
@@ -87,7 +86,6 @@ public class ContractsController : Controller
             return View(list);
         }
 
-        // GET: Contracts/ExportCsv
         public async Task<IActionResult> ExportCsv(string? registrationNumber, string? institution, string? clientFirstName, string? clientLastName, string? managerFirstName, string? managerLastName, string? statusFilter)
         {
             var contracts = _context.Contracts.Include(c => c.Client).Include(c => c.ManagerAdvisor).AsQueryable();
@@ -108,7 +106,6 @@ public class ContractsController : Controller
             return File(bytes, "text/csv; charset=utf-8", $"smlouvy-export-{ts}.csv");
         }
 
-        // GET: Contracts/ExportSingleCsv/5
         public async Task<IActionResult> ExportSingleCsv(int id)
         {
             var contract = await _context.Contracts
@@ -124,7 +121,6 @@ public class ContractsController : Controller
             return File(bytes, "text/csv; charset=utf-8", fileName);
         }
 
-        // GET: Contracts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -141,7 +137,6 @@ public class ContractsController : Controller
             return View(contract);
         }
 
-        // GET: Contracts/Create
         public async Task<IActionResult> Create()
         {
             var vm = new ContractFormViewModel
@@ -154,12 +149,11 @@ public class ContractsController : Controller
             return View(vm);
         }
 
-        // POST: Contracts/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ContractFormViewModel vm)
         {
-            // Note: ManagerAdvisor is required and will be automatically added to participants.
+
 
             if (vm.DateEnded.HasValue && vm.DateEnded.Value < vm.DateClosed)
             {
@@ -182,7 +176,7 @@ public class ContractsController : Controller
                 _context.Contracts.Add(contract);
                 await _context.SaveChangesAsync();
 
-                // add participants including manager (avoid duplicates)
+
                 var advisorIds = new HashSet<int>(vm.SelectedAdvisorIds ?? new List<int>());
                 advisorIds.Add(vm.ManagerAdvisorId);
                 foreach (var advisorId in advisorIds)
@@ -195,13 +189,12 @@ public class ContractsController : Controller
                 return RedirectToAction(nameof(Index));
             }
 
-            // reload lists
+
             vm.Clients = await _context.Clients.OrderBy(c => c.LastName).ThenBy(c => c.FirstName).ToListAsync();
             vm.Advisors = await _context.Advisors.OrderBy(a => a.LastName).ThenBy(a => a.FirstName).ToListAsync();
             return View(vm);
         }
 
-        // GET: Contracts/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -230,14 +223,11 @@ public class ContractsController : Controller
             return View(vm);
         }
 
-        // POST: Contracts/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, ContractFormViewModel vm)
         {
             if (id != vm.Id) return NotFound();
-
-            // Note: ManagerAdvisor is required and will be automatically added to participants.
 
             if (vm.DateEnded.HasValue && vm.DateEnded.Value < vm.DateClosed)
             {
@@ -260,7 +250,6 @@ public class ContractsController : Controller
                 contract.DateValidFrom = vm.DateValidFrom;
                 contract.DateEnded = vm.DateEnded;
 
-                // update M:N ContractAdvisor: remove all existing and add new ones (include manager, avoid duplicates)
                 var existing = contract.ContractAdvisors?.ToList() ?? new List<ContractAdvisor>();
                 if (existing.Any())
                 {
@@ -282,13 +271,12 @@ public class ContractsController : Controller
                 return RedirectToAction(nameof(Index));
             }
 
-            // reload lists
+
             vm.Clients = await _context.Clients.OrderBy(c => c.LastName).ThenBy(c => c.FirstName).ToListAsync();
             vm.Advisors = await _context.Advisors.OrderBy(a => a.LastName).ThenBy(a => a.FirstName).ToListAsync();
             return View(vm);
         }
 
-        // GET: Contracts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -305,7 +293,6 @@ public class ContractsController : Controller
             return View(contract);
         }
 
-        // POST: Contracts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -316,7 +303,6 @@ public class ContractsController : Controller
 
             if (contract == null) return NotFound();
 
-            // remove M:N links first
             if (contract.ContractAdvisors != null && contract.ContractAdvisors.Any())
             {
                 _context.ContractAdvisors.RemoveRange(contract.ContractAdvisors);
@@ -329,7 +315,6 @@ public class ContractsController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: Contracts/EndContract/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EndContract(int id, string? returnUrl)
@@ -346,7 +331,6 @@ public class ContractsController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: Contracts/ReactivateContract/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ReactivateContract(int id, string? returnUrl)

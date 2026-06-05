@@ -9,9 +9,9 @@ html {
 }
 
 .root, :root {
-  --blogic-dark: #111827; /* deep slate */
-  --blogic-orange: #f97316; /* requested orange */
-  --blogic-bg: #f3f4f6; /* requested page background */
+  --blogic-dark: #111827;
+  --blogic-orange: #f97316;
+  --blogic-bg: #f3f4f6;
   --blogic-card: #ffffff;
   --blogic-muted: #6b7280;
 }
@@ -38,7 +38,7 @@ body {
 }
 
 .navbar .nav-link {
-  color: #e5e7eb; /* light gray for contrast */
+  color: #e5e7eb;
 }
 .navbar .nav-link:hover, .navbar .nav-link:focus { color: #ffffff; }
 .navbar .brand-main { color: var(--blogic-orange); font-weight: 700; font-size: 1.15rem; }
@@ -73,7 +73,6 @@ body {
 }
 .btn-outline-primary:hover { background-color: rgba(249,115,22,0.08); }
 
-/* ensure outline-light is visible on dark navbar */
 .btn-outline-light {
   color: #ffffff;
   border-color: rgba(255,255,255,0.15);
@@ -94,7 +93,6 @@ body {
   text-align: start;
 }
 
-/* Action buttons layout used in Contracts index */
 .action-buttons {
   display: flex;
   flex-direction: column;
@@ -124,7 +122,6 @@ body {
 
 footer.footer { padding: 1rem 0; }
 
-/* Unified detail button */
 .btn-detail {
   padding-left: .65rem;
   padding-right: .65rem;

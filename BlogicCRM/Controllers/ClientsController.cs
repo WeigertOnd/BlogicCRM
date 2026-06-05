@@ -1,10 +1,10 @@
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
 using BlogicCRM.Data;
 using BlogicCRM.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlogicCRM.Controllers
 {
@@ -18,7 +18,6 @@ public class ClientsController : Controller
             _context = context;
         }
 
-        // GET: Clients
         public async Task<IActionResult> Index(string? firstName, string? lastName, string? email, string? phone, string? birthNumber, int? age)
         {
             var clients = _context.Clients.AsQueryable();
@@ -68,7 +67,6 @@ public class ClientsController : Controller
             return View(list);
         }
 
-        // GET: Clients/ExportCsv
         public async Task<IActionResult> ExportCsv(string? firstName, string? lastName, string? email, string? phone, string? birthNumber, int? age)
         {
             var clients = _context.Clients.AsQueryable();
@@ -84,7 +82,6 @@ public class ClientsController : Controller
             return File(bytes, "text/csv; charset=utf-8", $"klienti-export-{ts}.csv");
         }
 
-        // GET: Clients/ExportSingleCsv/5
         public async Task<IActionResult> ExportSingleCsv(int id)
         {
             var client = await _context.Clients.FindAsync(id);
@@ -94,7 +91,6 @@ public class ClientsController : Controller
             return File(bytes, "text/csv; charset=utf-8", fileName);
         }
 
-        // GET: Clients/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -109,13 +105,10 @@ public class ClientsController : Controller
             return View(client);
         }
 
-        // GET: Clients/Create
         public IActionResult Create()
         {
             return View();
         }
-
-        // POST: Clients/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("FirstName,LastName,Email,Phone,BirthNumber,Age")] Client client)
@@ -130,7 +123,6 @@ public class ClientsController : Controller
             return View(client);
         }
 
-        // GET: Clients/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -139,8 +131,6 @@ public class ClientsController : Controller
             if (client == null) return NotFound();
             return View(client);
         }
-
-        // POST: Clients/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Email,Phone,BirthNumber,Age")] Client client)
@@ -165,7 +155,6 @@ public class ClientsController : Controller
             return View(client);
         }
 
-        // GET: Clients/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -178,14 +167,13 @@ public class ClientsController : Controller
 
             if (client.Contracts != null && client.Contracts.Any())
             {
-                ViewBag.ErrorMessage = "Klienta nelze smazat, protože má přiřazené smlouvy.";
-                TempData["Error"] = "Klienta nelze smazat, protože má přiřazené smlouvy.";
+                ViewBag.ErrorMessage = "Client cannot be deleted because they have assigned contracts.";
+                TempData["Error"] = "Client cannot be deleted because they have assigned contracts.";
             }
 
             return View(client);
         }
 
-        // POST: Clients/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

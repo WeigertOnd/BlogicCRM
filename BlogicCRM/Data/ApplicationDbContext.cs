@@ -35,21 +35,19 @@ namespace BlogicCRM.Data
                 .HasForeignKey(ca => ca.AdvisorId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Contract -> ManagerAdvisor (one Advisor manages many Contracts)
             modelBuilder.Entity<Contract>()
                 .HasOne(c => c.ManagerAdvisor)
                 .WithMany(a => a.ManagedContracts)
                 .HasForeignKey(c => c.ManagerAdvisorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Client -> Contracts: prevent cascade delete to avoid accidental contract deletions
+            // Client -> Contracts: zabránit kaskádovému smazání, aby nedocházelo k náhodnému odstranění smluv
             modelBuilder.Entity<Contract>()
                 .HasOne(c => c.Client)
                 .WithMany(cl => cl.Contracts)
                 .HasForeignKey(c => c.ClientId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Seed data (expanded)
             modelBuilder.Entity<Client>().HasData(
                 new Client { Id = 1, FirstName = "Jan", LastName = "Novák", Email = "jan.novak@priklad.cz", Phone = "+420123456789", BirthNumber = "800101/1234", Age = 44 },
                 new Client { Id = 2, FirstName = "Petra", LastName = "Svobodová", Email = "petra.svobodova@priklad.cz", Phone = "+420987654321", BirthNumber = "900202/4321", Age = 34 },
@@ -91,52 +89,37 @@ namespace BlogicCRM.Data
             );
 
             modelBuilder.Entity<ContractAdvisor>().HasData(
-                // Contract 1 participants
+
                 new ContractAdvisor { ContractId = 1, AdvisorId = 1 },
                 new ContractAdvisor { ContractId = 1, AdvisorId = 2 },
-                // Contract 2 participants
                 new ContractAdvisor { ContractId = 2, AdvisorId = 2 },
-                // Contract 3 participants
                 new ContractAdvisor { ContractId = 3, AdvisorId = 3 },
                 new ContractAdvisor { ContractId = 3, AdvisorId = 1 },
-                // Contract 4
                 new ContractAdvisor { ContractId = 4, AdvisorId = 4 },
                 new ContractAdvisor { ContractId = 4, AdvisorId = 1 },
-                // Contract 5
                 new ContractAdvisor { ContractId = 5, AdvisorId = 5 },
                 new ContractAdvisor { ContractId = 5, AdvisorId = 2 },
                 new ContractAdvisor { ContractId = 5, AdvisorId = 3 },
-                // Contract 6
                 new ContractAdvisor { ContractId = 6, AdvisorId = 6 },
-                // Contract 7
                 new ContractAdvisor { ContractId = 7, AdvisorId = 7 },
                 new ContractAdvisor { ContractId = 7, AdvisorId = 4 },
-                // Contract 8
                 new ContractAdvisor { ContractId = 8, AdvisorId = 8 },
                 new ContractAdvisor { ContractId = 8, AdvisorId = 5 },
                 new ContractAdvisor { ContractId = 8, AdvisorId = 6 },
-                // Contract 9
                 new ContractAdvisor { ContractId = 9, AdvisorId = 1 },
                 new ContractAdvisor { ContractId = 9, AdvisorId = 2 },
-                // Contract 10
                 new ContractAdvisor { ContractId = 10, AdvisorId = 2 },
                 new ContractAdvisor { ContractId = 10, AdvisorId = 3 },
-                // Contract 11
                 new ContractAdvisor { ContractId = 11, AdvisorId = 3 },
                 new ContractAdvisor { ContractId = 11, AdvisorId = 1 },
-                // Contract 12
                 new ContractAdvisor { ContractId = 12, AdvisorId = 4 },
-                // Contract 13
                 new ContractAdvisor { ContractId = 13, AdvisorId = 5 },
                 new ContractAdvisor { ContractId = 13, AdvisorId = 2 },
-                // Contract 14
                 new ContractAdvisor { ContractId = 14, AdvisorId = 6 },
-                // Contract 15
                 new ContractAdvisor { ContractId = 15, AdvisorId = 7 },
                 new ContractAdvisor { ContractId = 15, AdvisorId = 8 }
             );
 
-            // UserAccounts table
             modelBuilder.Entity<BlogicCRM.Models.UserAccount>(eb =>
             {
                 eb.HasIndex(u => u.Email).IsUnique();
