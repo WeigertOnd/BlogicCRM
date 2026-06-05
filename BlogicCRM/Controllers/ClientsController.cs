@@ -59,7 +59,39 @@ public class ClientsController : Controller
             }
 
             var list = await clients.OrderBy(c => c.LastName).ThenBy(c => c.FirstName).ToListAsync();
+            ViewData["firstName"] = firstName;
+            ViewData["lastName"] = lastName;
+            ViewData["email"] = email;
+            ViewData["phone"] = phone;
+            ViewData["birthNumber"] = birthNumber;
+            ViewData["age"] = age?.ToString();
             return View(list);
+        }
+
+        // GET: Clients/ExportCsv
+        public async Task<IActionResult> ExportCsv(string? firstName, string? lastName, string? email, string? phone, string? birthNumber, int? age)
+        {
+            var clients = _context.Clients.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(firstName)) { var s = firstName.Trim(); clients = clients.Where(c => c.FirstName.Contains(s)); }
+            if (!string.IsNullOrWhiteSpace(lastName)) { var s = lastName.Trim(); clients = clients.Where(c => c.LastName.Contains(s)); }
+            if (!string.IsNullOrWhiteSpace(email)) { var s = email.Trim(); clients = clients.Where(c => c.Email.Contains(s)); }
+            if (!string.IsNullOrWhiteSpace(phone)) { var s = phone.Trim(); clients = clients.Where(c => c.Phone != null && c.Phone.StartsWith(s)); }
+            if (!string.IsNullOrWhiteSpace(birthNumber)) { var s = birthNumber.Trim(); clients = clients.Where(c => c.BirthNumber.Contains(s)); }
+            if (age.HasValue) { clients = clients.Where(c => c.Age == age.Value); }
+            var list = await clients.OrderBy(c => c.LastName).ThenBy(c => c.FirstName).ToListAsync();
+            var bytes = BlogicCRM.Services.CsvExportService.GenerateClientsCsv(list);
+            var ts = DateTime.Now.ToString("yyyyMMdd-HHmm");
+            return File(bytes, "text/csv; charset=utf-8", $"klienti-export-{ts}.csv");
+        }
+
+        // GET: Clients/ExportSingleCsv/5
+        public async Task<IActionResult> ExportSingleCsv(int id)
+        {
+            var client = await _context.Clients.FindAsync(id);
+            if (client == null) return NotFound();
+            var bytes = BlogicCRM.Services.CsvExportService.GenerateClientsCsv(new[] { client });
+            var fileName = $"klient-{client.Id}.csv";
+            return File(bytes, "text/csv; charset=utf-8", fileName);
         }
 
         // GET: Clients/Details/5

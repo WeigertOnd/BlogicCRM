@@ -7,7 +7,20 @@
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Seznam smluv</h5>
-        <a class="btn btn-primary" asp-action="Create">Přidat smlouvu</a>
+        <div>
+            <a class="btn btn-primary me-2" asp-action="Create">Přidat smlouvu</a>
+            <form method="get" asp-action="ExportCsv" asp-controller="Contracts" class="d-inline">
+                <input type="hidden" name="registrationNumber" value="@ViewData["registrationNumber"]" />
+                <input type="hidden" name="institution" value="@ViewData["institution"]" />
+                <input type="hidden" name="clientFirstName" value="@ViewData["clientFirstName"]" />
+                <input type="hidden" name="clientLastName" value="@ViewData["clientLastName"]" />
+                <input type="hidden" name="managerFirstName" value="@ViewData["managerFirstName"]" />
+                <input type="hidden" name="managerLastName" value="@ViewData["managerLastName"]" />
+                <input type="hidden" name="statusFilter" value="@ViewData["statusFilter"]" />
+                <button type="submit" class="btn btn-outline-primary">Export CSV</button>
+            </form>
+            <div class="small text-muted mt-1">Export CSV stáhne aktuálně vyfiltrované záznamy.</div>
+        </div>
     </div>
     <div class="card-body">
         <div class="card mb-3">

@@ -7,7 +7,19 @@
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Seznam klientů</h5>
-        <a class="btn btn-primary" asp-action="Create">Přidat klienta</a>
+        <div>
+            <a class="btn btn-primary me-2" asp-action="Create">Přidat klienta</a>
+            <form method="get" asp-action="ExportCsv" asp-controller="Clients" class="d-inline">
+                <input type="hidden" name="firstName" value="@ViewData["firstName"]" />
+                <input type="hidden" name="lastName" value="@ViewData["lastName"]" />
+                <input type="hidden" name="email" value="@ViewData["email"]" />
+                <input type="hidden" name="phone" value="@ViewData["phone"]" />
+                <input type="hidden" name="birthNumber" value="@ViewData["birthNumber"]" />
+                <input type="hidden" name="age" value="@ViewData["age"]" />
+                <button type="submit" class="btn btn-outline-primary">Export CSV</button>
+            </form>
+            <div class="small text-muted mt-1">Export CSV stáhne aktuálně vyfiltrované záznamy.</div>
+        </div>
     </div>
     <div class="card-body">
         <div class="card mb-3">

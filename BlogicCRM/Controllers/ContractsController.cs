@@ -77,7 +77,51 @@ public class ContractsController : Controller
             }
 
             var list = await contracts.OrderBy(c => c.RegistrationNumber).ToListAsync();
+            ViewData["registrationNumber"] = registrationNumber;
+            ViewData["institution"] = institution;
+            ViewData["clientFirstName"] = clientFirstName;
+            ViewData["clientLastName"] = clientLastName;
+            ViewData["managerFirstName"] = managerFirstName;
+            ViewData["managerLastName"] = managerLastName;
+            ViewData["statusFilter"] = statusFilter;
             return View(list);
+        }
+
+        // GET: Contracts/ExportCsv
+        public async Task<IActionResult> ExportCsv(string? registrationNumber, string? institution, string? clientFirstName, string? clientLastName, string? managerFirstName, string? managerLastName, string? statusFilter)
+        {
+            var contracts = _context.Contracts.Include(c => c.Client).Include(c => c.ManagerAdvisor).AsQueryable();
+            if (!string.IsNullOrWhiteSpace(registrationNumber)) { var s = registrationNumber.Trim(); contracts = contracts.Where(c => c.RegistrationNumber.Contains(s)); }
+            if (!string.IsNullOrWhiteSpace(institution)) { var s = institution.Trim(); contracts = contracts.Where(c => c.Institution.Contains(s)); }
+            if (!string.IsNullOrWhiteSpace(clientFirstName)) { var s = clientFirstName.Trim(); contracts = contracts.Where(c => c.Client != null && c.Client.FirstName.Contains(s)); }
+            if (!string.IsNullOrWhiteSpace(clientLastName)) { var s = clientLastName.Trim(); contracts = contracts.Where(c => c.Client != null && c.Client.LastName.Contains(s)); }
+            if (!string.IsNullOrWhiteSpace(managerFirstName)) { var s = managerFirstName.Trim(); contracts = contracts.Where(c => c.ManagerAdvisor != null && c.ManagerAdvisor.FirstName.Contains(s)); }
+            if (!string.IsNullOrWhiteSpace(managerLastName)) { var s = managerLastName.Trim(); contracts = contracts.Where(c => c.ManagerAdvisor != null && c.ManagerAdvisor.LastName.Contains(s)); }
+            if (!string.IsNullOrWhiteSpace(statusFilter) && statusFilter != "All")
+            {
+                if (statusFilter == "Active") contracts = contracts.Where(c => !c.DateEnded.HasValue || c.DateEnded.Value > DateTime.Today);
+                else if (statusFilter == "Ended") contracts = contracts.Where(c => c.DateEnded.HasValue && c.DateEnded.Value <= DateTime.Today);
+            }
+            var list = await contracts.OrderBy(c => c.RegistrationNumber).ToListAsync();
+            var bytes = BlogicCRM.Services.CsvExportService.GenerateContractsCsv(list);
+            var ts = DateTime.Now.ToString("yyyyMMdd-HHmm");
+            return File(bytes, "text/csv; charset=utf-8", $"smlouvy-export-{ts}.csv");
+        }
+
+        // GET: Contracts/ExportSingleCsv/5
+        public async Task<IActionResult> ExportSingleCsv(int id)
+        {
+            var contract = await _context.Contracts
+                .Include(c => c.Client)
+                .Include(c => c.ManagerAdvisor)
+                .Include(c => c.ContractAdvisors).ThenInclude(ca => ca.Advisor)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (contract == null) return NotFound();
+
+            var bytes = BlogicCRM.Services.CsvExportService.GenerateSingleContractCsv(contract);
+            var fileName = $"smlouva-{contract.Id}.csv";
+            return File(bytes, "text/csv; charset=utf-8", fileName);
         }
 
         // GET: Contracts/Details/5

@@ -59,7 +59,39 @@ public class AdvisorsController : Controller
             }
 
             var list = await advisors.OrderBy(a => a.LastName).ThenBy(a => a.FirstName).ToListAsync();
+            ViewData["firstName"] = firstName;
+            ViewData["lastName"] = lastName;
+            ViewData["email"] = email;
+            ViewData["phone"] = phone;
+            ViewData["birthNumber"] = birthNumber;
+            ViewData["age"] = age?.ToString();
             return View(list);
+        }
+
+        // GET: Advisors/ExportCsv
+        public async Task<IActionResult> ExportCsv(string? firstName, string? lastName, string? email, string? phone, string? birthNumber, int? age)
+        {
+            var advisors = _context.Advisors.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(firstName)) { var s = firstName.Trim(); advisors = advisors.Where(a => a.FirstName.Contains(s)); }
+            if (!string.IsNullOrWhiteSpace(lastName)) { var s = lastName.Trim(); advisors = advisors.Where(a => a.LastName.Contains(s)); }
+            if (!string.IsNullOrWhiteSpace(email)) { var s = email.Trim(); advisors = advisors.Where(a => a.Email.Contains(s)); }
+            if (!string.IsNullOrWhiteSpace(phone)) { var s = phone.Trim(); advisors = advisors.Where(a => a.Phone != null && a.Phone.StartsWith(s)); }
+            if (!string.IsNullOrWhiteSpace(birthNumber)) { var s = birthNumber.Trim(); advisors = advisors.Where(a => a.BirthNumber.Contains(s)); }
+            if (age.HasValue) { advisors = advisors.Where(a => a.Age == age.Value); }
+            var list = await advisors.OrderBy(a => a.LastName).ThenBy(a => a.FirstName).ToListAsync();
+            var bytes = BlogicCRM.Services.CsvExportService.GenerateAdvisorsCsv(list);
+            var ts = DateTime.Now.ToString("yyyyMMdd-HHmm");
+            return File(bytes, "text/csv; charset=utf-8", $"poradci-export-{ts}.csv");
+        }
+
+        // GET: Advisors/ExportSingleCsv/5
+        public async Task<IActionResult> ExportSingleCsv(int id)
+        {
+            var advisor = await _context.Advisors.FindAsync(id);
+            if (advisor == null) return NotFound();
+            var bytes = BlogicCRM.Services.CsvExportService.GenerateAdvisorsCsv(new[] { advisor });
+            var fileName = $"poradce-{advisor.Id}.csv";
+            return File(bytes, "text/csv; charset=utf-8", fileName);
         }
 
         // GET: Advisors/Details/5
