@@ -67,9 +67,7 @@
                             <td>@item.BirthNumber</td>
                             <td>@item.Age</td>
                             <td>
-                                <a class="btn btn-sm btn-outline-primary me-1" asp-action="Details" asp-route-id="@item.Id">Detail</a>
-                                <a class="btn btn-sm btn-outline-secondary me-1" asp-action="Edit" asp-route-id="@item.Id">Upravit</a>
-                                <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Smazat</a>
+                                <a class="btn btn-sm btn-outline-primary btn-detail" asp-action="Details" asp-route-id="@item.Id">Detail</a>
                             </td>
                         </tr>
                     }

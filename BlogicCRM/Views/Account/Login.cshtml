@@ -3,11 +3,9 @@
     ViewData["Title"] = "Přihlášení";
 }
 
-<div class="card">
-    <div class="card-header">
-        <h5 class="mb-0">Přihlášení</h5>
-    </div>
-    <div class="card-body">
+<div class="auth-wrapper">
+    <div class="auth-card card p-4">
+        <h5 class="mb-3">Přihlášení</h5>
         <form asp-action="Login" method="post">
             <div class="mb-3">
                 <label asp-for="Email" class="form-label"></label>

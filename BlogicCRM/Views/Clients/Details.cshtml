@@ -64,7 +64,15 @@
             </div>
         }
     </div>
-    <div class="card-footer text-end">
-        <a asp-action="Index" class="btn btn-secondary">Zpět na seznam klientů</a>
+    <div class="card-footer">
+        <div class="d-flex flex-column flex-md-row justify-content-end gap-2">
+            <div class="d-flex gap-2">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Upravit</a>
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">Smazat</a>
+            </div>
+            <div>
+                <a asp-action="Index" class="btn btn-secondary">Zpět na seznam klientů</a>
+            </div>
+        </div>
     </div>
 </div>

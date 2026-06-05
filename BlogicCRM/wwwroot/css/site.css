@@ -8,8 +8,16 @@ html {
   }
 }
 
+.root, :root {
+  --blogic-dark: #111827; /* deep slate */
+  --blogic-orange: #f97316; /* requested orange */
+  --blogic-bg: #f3f4f6; /* requested page background */
+  --blogic-card: #ffffff;
+  --blogic-muted: #6b7280;
+}
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem rgba(249,115,22,0.25);
 }
 
 html {
@@ -21,15 +29,61 @@ body {
   margin-bottom: 60px;
 }
 
+.bg-blogic-dark {
+  background-color: var(--blogic-dark) !important;
+}
+
+.navbar {
+  z-index: 10;
+}
+
+.navbar .nav-link {
+  color: #e5e7eb; /* light gray for contrast */
+}
+.navbar .nav-link:hover, .navbar .nav-link:focus { color: #ffffff; }
+.navbar .brand-main { color: var(--blogic-orange); font-weight: 700; font-size: 1.15rem; }
+.navbar .brand-sub { color: #ffffff; font-weight: 600; margin-left: 4px; }
+.navbar-brand { color:#fff; display:flex; align-items:center; gap:6px; }
+
 .card { 
-  border-radius: 0.5rem;
+  background: #ffffff;
+  border: none;
+  border-radius: 0.75rem;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
 }
 
 .mb-3 { margin-bottom: 1rem !important; }
 
-.table-hover tbody tr:hover { background-color: #f8f9fa; }
+.table-hover tbody tr:hover { background-color: #eef2ff; }
 
 .btn { min-width: 84px; }
+
+.btn-primary, .btn.btn-primary {
+  background-color: var(--blogic-orange);
+  border-color: var(--blogic-orange);
+  color: white;
+  border-radius: .5rem;
+}
+.btn-primary:hover { background-color: #fb7b03; border-color: #fb7b03; }
+
+.btn-outline-primary {
+  color: var(--blogic-orange);
+  border-color: var(--blogic-orange);
+  border-radius: .5rem;
+}
+.btn-outline-primary:hover { background-color: rgba(249,115,22,0.08); }
+
+/* ensure outline-light is visible on dark navbar */
+.btn-outline-light {
+  color: #ffffff;
+  border-color: rgba(255,255,255,0.15);
+}
+.btn-outline-light:hover { background-color: rgba(255,255,255,0.06); color: #fff; }
+
+.btn-light {
+  background-color: #ffffff;
+  color: #111827;
+}
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
   color: var(--bs-secondary-color);
@@ -38,4 +92,40 @@ body {
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
+}
+
+/* Action buttons layout used in Contracts index */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  align-items: flex-start;
+}
+.action-buttons-row {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+.action-button {
+  min-width: 72px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .action-buttons { align-items: flex-start; }
+  .action-buttons-row { gap: 0.5rem; }
+}
+
+@media (max-width: 575.98px) {
+  .action-button { min-width: 100%; }
+}
+
+footer.footer { padding: 1rem 0; }
+
+/* Unified detail button */
+.btn-detail {
+  padding-left: .65rem;
+  padding-right: .65rem;
 }

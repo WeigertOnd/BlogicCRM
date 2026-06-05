@@ -4,51 +4,47 @@
     ViewData["Title"] = "Přehled";
 }
 
-<h1>Přehled</h1>
-<p>Přehled základních údajů CRM systému.</p>
+<div class="py-4 mb-4">
+    <div class="container-fluid">
+        <div class="card p-4">
+            <h1 class="mb-1">BlogicCRM</h1>
+            <p class="mb-0 text-muted">Interní systém pro správu klientů, poradců a smluv.</p>
+        </div>
+    </div>
+</div>
 
-<div class="row">
-    <div class="col-md-3 mb-3">
-        <div class="card text-white bg-primary">
-            <div class="card-body">
-                <h5 class="card-title">Klienti</h5>
-                <p class="card-text display-6">@Model.ClientsCount</p>
-            </div>
+<div class="row gy-3 mb-4">
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h6 class="text-muted">Klienti</h6>
+            <p class="display-6 mb-0">@Model.ClientsCount</p>
         </div>
     </div>
-    <div class="col-md-3 mb-3">
-        <div class="card text-white bg-secondary">
-            <div class="card-body">
-                <h5 class="card-title">Poradci</h5>
-                <p class="card-text display-6">@Model.AdvisorsCount</p>
-            </div>
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h6 class="text-muted">Poradci</h6>
+            <p class="display-6 mb-0">@Model.AdvisorsCount</p>
         </div>
     </div>
-    <div class="col-md-3 mb-3">
-        <div class="card text-white bg-success">
-            <div class="card-body">
-                <h5 class="card-title">Smlouvy celkem</h5>
-                <p class="card-text display-6">@Model.ContractsCount</p>
-            </div>
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h6 class="text-muted">Smlouvy celkem</h6>
+            <p class="display-6 mb-0">@Model.ContractsCount</p>
         </div>
     </div>
-    <div class="col-md-3 mb-3">
-        <div class="card text-white bg-info">
-            <div class="card-body">
-                <h5 class="card-title">Aktivní smlouvy</h5>
-                <p class="card-text display-6">@Model.ActiveContractsCount</p>
-            </div>
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h6 class="text-muted">Aktivní smlouvy</h6>
+            <p class="display-6 mb-0">@Model.ActiveContractsCount</p>
         </div>
     </div>
 </div>
 
 <div class="row mb-4">
     <div class="col-md-3">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Ukončené smlouvy</h5>
-                <p class="card-text display-6">@Model.EndedContractsCount</p>
-            </div>
+        <div class="card p-3">
+            <h6 class="text-muted">Ukončené smlouvy</h6>
+            <p class="display-6 mb-0">@Model.EndedContractsCount</p>
         </div>
     </div>
 </div>
@@ -82,7 +78,7 @@ else
                 <td>@c.ManagerAdvisor?.FirstName @c.ManagerAdvisor?.LastName</td>
                 <td>@c.DateValidFrom.ToShortDateString()</td>
                 <td>
-                    @if (!c.DateEnded.HasValue || c.DateEnded.Value >= DateTime.Today)
+                    @if (!c.DateEnded.HasValue || c.DateEnded.Value > DateTime.Today)
                     {
                         <span class="badge bg-success">Aktivní</span>
                     }
@@ -91,7 +87,7 @@ else
                         <span class="badge bg-secondary">Ukončená</span>
                     }
                 </td>
-                <td><a class="btn btn-sm btn-info" asp-controller="Contracts" asp-action="Details" asp-route-id="@c.Id">Detail</a></td>
+                <td><a class="btn btn-sm btn-outline-primary btn-detail" asp-controller="Contracts" asp-action="Details" asp-route-id="@c.Id">Detail</a></td>
             </tr>
         }
         </tbody>
