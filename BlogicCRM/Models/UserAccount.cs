@@ -9,6 +9,7 @@ namespace BlogicCRM.Models
 
         [Required(ErrorMessage = "E-mail je povinný.")]
         [EmailAddress(ErrorMessage = "Zadejte platnou e-mailovou adresu.")]
+        [RegularExpression(@"^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\.)+[A-Za-z]{2,}$", ErrorMessage = "Zadejte platnou e-mailovou adresu ve formátu např. uzivatel@domena.cz.")]
         public string Email { get; set; } = string.Empty;
 
         [Required]

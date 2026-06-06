@@ -44,14 +44,12 @@ namespace BlogicCRM.Services
             sb.AppendLine("Jméno;Příjmení;E-mail;Telefon;Rodné číslo;Věk");
             foreach (var c in clients)
             {
-                var phoneCell = string.IsNullOrEmpty(c.Phone) ? string.Empty : "=\"" + c.Phone + "\"";
-                var birthCell = string.IsNullOrEmpty(c.BirthNumber) ? string.Empty : "=\"" + c.BirthNumber + "\"";
                 var parts = new[] {
                     Escape(c.FirstName),
                     Escape(c.LastName),
                     Escape(c.Email),
-                    Escape(phoneCell),
-                    Escape(birthCell),
+                    Escape(c.Phone),
+                    Escape(c.BirthNumber),
                     c.Age.ToString()
                 };
                 sb.AppendLine(string.Join(";", parts));
@@ -65,14 +63,12 @@ namespace BlogicCRM.Services
             sb.AppendLine("Jméno;Příjmení;E-mail;Telefon;Rodné číslo;Věk");
             foreach (var a in advisors)
             {
-                var phoneCell = string.IsNullOrEmpty(a.Phone) ? string.Empty : "=\"" + a.Phone + "\"";
-                var birthCell = string.IsNullOrEmpty(a.BirthNumber) ? string.Empty : "=\"" + a.BirthNumber + "\"";
                 var parts = new[] {
                     Escape(a.FirstName),
                     Escape(a.LastName),
                     Escape(a.Email),
-                    Escape(phoneCell),
-                    Escape(birthCell),
+                    Escape(a.Phone),
+                    Escape(a.BirthNumber),
                     a.Age.ToString()
                 };
                 sb.AppendLine(string.Join(";", parts));

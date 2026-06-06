@@ -153,23 +153,19 @@ public class ContractsController : Controller
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ContractFormViewModel vm)
         {
-
-
-            if (vm.DateEnded.HasValue && vm.DateEnded.Value < vm.DateClosed)
-            {
-                ModelState.AddModelError(nameof(vm.DateEnded), "Datum ukončení nesmí být dříve než datum uzavření.");
-            }
-
             if (ModelState.IsValid)
             {
+                var dateClosed = vm.DateClosed.GetValueOrDefault();
+                var dateValidFrom = vm.DateValidFrom.GetValueOrDefault();
+
                 var contract = new Contract
                 {
                     RegistrationNumber = vm.RegistrationNumber,
                     Institution = vm.Institution,
                     ClientId = vm.ClientId,
                     ManagerAdvisorId = vm.ManagerAdvisorId,
-                    DateClosed = vm.DateClosed,
-                    DateValidFrom = vm.DateValidFrom,
+                    DateClosed = dateClosed,
+                    DateValidFrom = dateValidFrom,
                     DateEnded = vm.DateEnded
                 };
 
@@ -229,13 +225,11 @@ public class ContractsController : Controller
         {
             if (id != vm.Id) return NotFound();
 
-            if (vm.DateEnded.HasValue && vm.DateEnded.Value < vm.DateClosed)
-            {
-                ModelState.AddModelError(nameof(vm.DateEnded), "Datum ukončení nesmí být dříve než datum uzavření.");
-            }
-
             if (ModelState.IsValid)
             {
+                var dateClosed = vm.DateClosed.GetValueOrDefault();
+                var dateValidFrom = vm.DateValidFrom.GetValueOrDefault();
+
                 var contract = await _context.Contracts
                     .Include(c => c.ContractAdvisors)
                     .FirstOrDefaultAsync(c => c.Id == id);
@@ -246,8 +240,8 @@ public class ContractsController : Controller
                 contract.Institution = vm.Institution;
                 contract.ClientId = vm.ClientId;
                 contract.ManagerAdvisorId = vm.ManagerAdvisorId;
-                contract.DateClosed = vm.DateClosed;
-                contract.DateValidFrom = vm.DateValidFrom;
+                contract.DateClosed = dateClosed;
+                contract.DateValidFrom = dateValidFrom;
                 contract.DateEnded = vm.DateEnded;
 
                 var existing = contract.ContractAdvisors?.ToList() ?? new List<ContractAdvisor>();

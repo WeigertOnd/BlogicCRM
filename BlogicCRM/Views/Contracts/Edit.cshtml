@@ -10,6 +10,7 @@
     </div>
     <div class="card-body">
         <form asp-action="Edit" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="mb-3">
                 <label asp-for="RegistrationNumber" class="form-label"></label>
@@ -24,14 +25,14 @@
             <div class="mb-3">
                 <label asp-for="ClientId" class="form-label"></label>
                 <select asp-for="ClientId" class="form-select" asp-items="@(new Microsoft.AspNetCore.Mvc.Rendering.SelectList(Model.Clients.Select(c => new { Id = c.Id, Full = c.FirstName + " " + c.LastName + (string.IsNullOrEmpty(c.Email) ? string.Empty : " (" + c.Email + ")") }), "Id", "Full"))">
-                    <option value="">-- vyberte klienta --</option>
+                    <option value="0">-- vyberte klienta --</option>
                 </select>
                 <span asp-validation-for="ClientId" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label asp-for="ManagerAdvisorId" class="form-label"></label>
                 <select asp-for="ManagerAdvisorId" class="form-select" asp-items="@(new Microsoft.AspNetCore.Mvc.Rendering.SelectList(Model.Advisors.Select(a => new { Id = a.Id, Full = a.FirstName + " " + a.LastName }), "Id", "Full"))">
-                    <option value="">-- vyberte správce --</option>
+                    <option value="0">-- vyberte správce --</option>
                 </select>
                 <span asp-validation-for="ManagerAdvisorId" class="text-danger"></span>
             </div>

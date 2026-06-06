@@ -42,7 +42,9 @@ namespace BlogicCRM.Controllers
             }
 
 
-            if (vm.Email == DemoEmail && vm.Password == DemoPassword)
+            var email = vm.Email.Trim().ToLowerInvariant();
+
+            if (email == DemoEmail && vm.Password == DemoPassword)
             {
                 var claims = new[] { new Claim(ClaimTypes.Name, DemoEmail), new Claim(ClaimTypes.Email, DemoEmail) };
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -53,7 +55,7 @@ namespace BlogicCRM.Controllers
             }
 
 
-            var user = _context.UserAccounts.FirstOrDefault(u => u.Email == vm.Email);
+            var user = _context.UserAccounts.FirstOrDefault(u => u.Email == email);
             if (user != null)
             {
                 if (VerifyPassword(vm.Password, user.PasswordSalt, user.PasswordHash))

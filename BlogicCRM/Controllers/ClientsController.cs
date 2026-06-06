@@ -167,8 +167,8 @@ public class ClientsController : Controller
 
             if (client.Contracts != null && client.Contracts.Any())
             {
-                ViewBag.ErrorMessage = "Client cannot be deleted because they have assigned contracts.";
-                TempData["Error"] = "Client cannot be deleted because they have assigned contracts.";
+                ViewBag.ErrorMessage = "Klienta nelze smazat, protože má přiřazené smlouvy.";
+                TempData["Error"] = "Klienta nelze smazat, protože má přiřazené smlouvy.";
             }
 
             return View(client);
